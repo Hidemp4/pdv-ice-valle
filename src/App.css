@@ -155,3 +155,46 @@
     -moz-appearance: textfield;
   }
 }
+
+/* Animações para toasts */
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-in {
+  animation-fill-mode: both;
+}
+
+.slide-in-from-top-2 {
+  animation-name: slideInFromTop;
+}
+
+.fade-in-0 {
+  animation-name: fadeIn;
+}
+
+.duration-300 {
+  animation-duration: 300ms;
+}
+
+/* Hover effect para toasts */
+.toast:hover {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}

@@ -6,6 +6,6 @@ CREATE TABLE
         description text null,
         barcode numeric not null,
         stock bigint not null,
-        created_at DateTime not null default (now ()),
+        created_at DateTime null default (DateTime (CURRENT_TIMESTAMP, 'localtime')),
         updated_at DateTime null
     )

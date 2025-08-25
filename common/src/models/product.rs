@@ -1,3 +1,4 @@
+use chrono::Utc;
 use diesel::prelude::*;
 
 #[derive(Insertable, Queryable, Selectable)]
@@ -9,8 +10,8 @@ pub struct Product {
     pub description: Option<String>,
     pub barcode: f64,
     pub stock: i64,
-    pub created_at: Option<String>,
-    pub updated_at: Option<String>,
+    pub created_at: Option<chrono::NaiveDateTime>,
+    pub updated_at: Option<chrono::NaiveDateTime>,
 }
 
 #[derive(Insertable)]

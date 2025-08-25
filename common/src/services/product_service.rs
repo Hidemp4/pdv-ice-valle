@@ -1,5 +1,9 @@
+use diesel::result::Error;
+
 use crate::{
-    infrastructure::DbPool, models::product::Product, repositories::product_repository::{DProductRepository, ProductRepository}
+    infrastructure::DbPool,
+    models::product::{Product, ProductBuilder},
+    repositories::product_repository::{DProductRepository, ProductRepository},
 };
 
 pub struct ProductService {
@@ -12,11 +16,16 @@ impl ProductService {
         Self { repository }
     }
 
-    pub fn get(&self, id: i32) {
-        self.repository.find_by_id(id);
+    pub fn get(&self, id: i32) -> Result<Product, Error> {
+        self.repository.find_by_id(id)
     }
 
-    pub fn create(&self, product: &Product) {
-        self.repository.save(product);
+    pub fn get_by_barcode(&self, barcode: f64) -> Result<Product, Error> {
+        self.repository.find_by_barcode(barcode)
+    }
+
+    pub fn create(&self, builder: ProductBuilder) -> Product {
+        let product = &builder.build();
+        self.repository.save(product)
     }
 }

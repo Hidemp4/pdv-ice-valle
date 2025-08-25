@@ -1,5 +1,5 @@
 use crate::{
-    infraestructure::DbPool, models::product::Product, repositories::product_repository::{DProductRepository, ProductRepository}
+    infrastructure::DbPool, models::product::Product, repositories::product_repository::{DProductRepository, ProductRepository}
 };
 
 pub struct ProductService {

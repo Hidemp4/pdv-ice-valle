@@ -1,6 +1,6 @@
 use std::sync::Arc;
 use tauri::Manager;
-use pdcommon::infraestructure::*;
+use pdcommon::infrastructure::*;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {

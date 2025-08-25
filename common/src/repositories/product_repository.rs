@@ -1,7 +1,7 @@
 use diesel::{RunQueryDsl, SelectableHelper};
 
 use crate::{
-    infraestructure::DbPool,
+    infrastructure::DbPool,
     models::{self, product::Product, schema::products},
 };
 

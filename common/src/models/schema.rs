@@ -7,7 +7,7 @@ diesel::table! {
         description -> Nullable<Text>,
         barcode -> Double,
         stock -> BigInt,
-        created_at -> Timestamp,
+        created_at -> Nullable<Timestamp>,
         updated_at -> Nullable<Timestamp>,
     }
 }

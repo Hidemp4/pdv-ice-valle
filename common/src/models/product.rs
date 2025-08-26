@@ -1,4 +1,3 @@
-use chrono::Utc;
 use diesel::prelude::*;
 
 #[derive(Insertable, Queryable, Selectable)]
@@ -8,7 +7,7 @@ pub struct Product {
     pub id: i32,
     pub name: String,
     pub description: Option<String>,
-    pub barcode: f64,
+    pub sku: String,
     pub stock: i64,
     pub created_at: Option<chrono::NaiveDateTime>,
     pub updated_at: Option<chrono::NaiveDateTime>,
@@ -19,34 +18,34 @@ pub struct Product {
 pub struct NewProduct {
     pub name: String,
     pub description: Option<String>,
-    pub barcode: f64,
+    pub sku: String,
     pub stock: i64,
 }
 
 pub struct ProductBuilder {
     name: String,
     description: Option<String>,
-    barcode: f64,
+    sku: String,
     stock: i64,
 }
 
 impl ProductBuilder {
-    pub fn new(name: String, barcode: f64, stock: i64) -> Self {
+    pub fn new(name: impl Into<String>, sku: impl Into<String>, stock: i64) -> Self {
         Self {
-            name,
+            name: name.into(),
             description: None,
-            barcode,
+            sku: sku.into(),
             stock,
         }
     }
 
-    pub fn name(mut self, name: String) -> Self {
-        self.name = name;
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.name = name.into();
         self
     }
 
-    pub fn barcode(mut self, barcode: f64) -> Self {
-        self.barcode = barcode;
+    pub fn sku(mut self, sku: impl Into<String>) -> Self {
+        self.sku = sku.into();
         self
     }
 
@@ -64,7 +63,7 @@ impl ProductBuilder {
         NewProduct {
             name: self.name,
             description: self.description,
-            barcode: self.barcode,
+            sku: self.sku,
             stock: self.stock,
         }
     }

@@ -20,8 +20,8 @@ impl ProductService {
         self.repository.find_by_id(id)
     }
 
-    pub fn get_by_barcode(&self, barcode: f64) -> Result<Product, Error> {
-        self.repository.find_by_barcode(barcode)
+    pub fn get_by_sku(&self, sku: String) -> Result<Product, Error> {
+        self.repository.find_by_sku(sku)
     }
 
     pub fn create(&self, builder: ProductBuilder) -> Product {

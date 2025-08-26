@@ -10,7 +10,7 @@ use crate::{
 pub trait ProductRepository {
     fn save(&self, product: &NewProduct) -> Product;
     fn find_by_id(&self, product_id: i32) -> Result<Product, Error>;
-    fn find_by_barcode(&self, qbarcode: f64) -> Result<Product, Error>;
+    fn find_by_sku(&self, qsku: String) -> Result<Product, Error>;
 }
 
 pub struct DProductRepository {
@@ -26,13 +26,11 @@ impl DProductRepository {
 impl ProductRepository for DProductRepository {
     fn save(&self, product: &NewProduct) -> Product {
         let mut conn = self.pool.get().unwrap();
-        let result = diesel::insert_into(products::table)
+        diesel::insert_into(products::table)
             .values(product)
             .returning(Product::as_returning())
             .get_result(&mut conn)
-            .expect("Failed to create a product");
-
-        result
+            .expect("Failed to create a product")
     }
 
     fn find_by_id(&self, product_id: i32) -> Result<Product, Error> {
@@ -48,10 +46,10 @@ impl ProductRepository for DProductRepository {
         }
     }
 
-    fn find_by_barcode(&self, qbarcode: f64) -> Result<Product, Error> {
+    fn find_by_sku(&self, qsku: String) -> Result<Product, Error> {
         let mut conn = self.pool.get().unwrap();
         let result = products
-            .filter(barcode.eq(qbarcode))
+            .filter(sku.eq(qsku))
             .select(Product::as_select())
             .get_result::<Product>(&mut conn);
 

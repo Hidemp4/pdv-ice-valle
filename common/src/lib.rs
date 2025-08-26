@@ -17,24 +17,23 @@ mod test {
     }
 
     #[test]
-    fn build_product() {
-        let product =
-            ProductBuilder::new("Biscoito traquinas".into(), 93030100130013.0, 2000).build();
+    fn test_product_builder() {
+        let product = ProductBuilder::new("Biscoito traquinas", "TEST001", 2000).build();
 
         assert_eq!(product.name, "Biscoito traquinas");
-        assert_eq!(product.barcode, 93030100130013.0);
+        assert_eq!(product.sku, "TEST001");
         assert_eq!(product.stock, 2000);
     }
 
     #[test]
-    fn create_new_product() {
-        let product = ProductBuilder::new("Biscoito traquinas".into(), 93030100130013.0, 2000);
+    fn test_create_new_product() {
+        let product = ProductBuilder::new("Biscoito traquinas", "TEST001", 2000);
 
         let service = ProductService::new(self::pool());
         let product = service.create(product);
 
         assert_eq!(product.name, "Biscoito traquinas");
-        assert_eq!(product.barcode, 93030100130013.0);
+        assert_eq!(product.sku, "TEST001");
         assert_eq!(product.stock, 2000);
     }
 }

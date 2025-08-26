@@ -7,6 +7,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onAddProduct }) => {
+  
   const [sku, setSku] = useState("");
   const [qtdProduct, setQtdProduct] = useState(1);
 

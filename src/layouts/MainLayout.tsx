@@ -14,6 +14,9 @@ const MainLayout: React.FC = () => {
   // Adiciona produtos na lista de compras
   const [cart, setCart] = useState<CardItem[]>([]);
 
+  // Soma o total da compra
+  const total = cart.reduce((acc, item) => acc + item.subtotal, 0);
+
   const handleAddProduct = (sku: string, qtd: number) => {
     const found = fakeProducts.find((p) => p.sku === sku);
 
@@ -41,7 +44,7 @@ const MainLayout: React.FC = () => {
           </main>
         </div>
         <div className="overflow-hidden">
-          <PaymentArea />
+          <PaymentArea total={total} />
         </div>
       </div>
     </div>

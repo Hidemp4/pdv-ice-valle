@@ -3,14 +3,10 @@ import CardTotalAmount from "./CardTotalAmount";
 import PaymentMethods from "./PaymentMethods";
 import { Button } from "./ui/button";
 
-interface PaymentAreaProps {
-  totalVenda: number;
-}
-
-const PaymentArea: React.FC<PaymentAreaProps> = ({ totalVenda }) => {
+const PaymentArea: React.FC = () => {
   return (
     <>
-      <CardTotalAmount subTotal={totalVenda} />
+      <CardTotalAmount />
       <PaymentMethods />
       <Separator />
       <div className="flex justify-end flex-col gap-4 p-4">

@@ -6,7 +6,7 @@ diesel::table! {
         name -> Text,
         description -> Nullable<Text>,
         sku -> Text,
-        price -> Nullable<Double>,
+        price -> Double,
         stock -> BigInt,
         created_at -> Nullable<Timestamp>,
         updated_at -> Nullable<Timestamp>,

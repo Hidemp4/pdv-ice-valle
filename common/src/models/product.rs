@@ -19,6 +19,7 @@ pub struct NewProduct {
     pub name: String,
     pub description: Option<String>,
     pub sku: String,
+    pub price: f64,
     pub stock: i64,
 }
 
@@ -26,15 +27,17 @@ pub struct ProductBuilder {
     name: String,
     description: Option<String>,
     sku: String,
+    price: f64,
     stock: i64,
 }
 
 impl ProductBuilder {
-    pub fn new(name: impl Into<String>, sku: impl Into<String>, stock: i64) -> Self {
+    pub fn new(name: impl Into<String>, sku: impl Into<String>, price: f64, stock: i64) -> Self {
         Self {
             name: name.into(),
             description: None,
             sku: sku.into(),
+            price,
             stock,
         }
     }
@@ -46,6 +49,11 @@ impl ProductBuilder {
 
     pub fn sku(mut self, sku: impl Into<String>) -> Self {
         self.sku = sku.into();
+        self
+    }
+
+    pub fn price(mut self, price: f64) -> Self {
+        self.price = price;
         self
     }
 
@@ -64,6 +72,7 @@ impl ProductBuilder {
             name: self.name,
             description: self.description,
             sku: self.sku,
+            price: self.price,
             stock: self.stock,
         }
     }

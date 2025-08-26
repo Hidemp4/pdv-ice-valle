@@ -16,16 +16,20 @@ impl ProductService {
         Self { repository }
     }
 
+    pub fn create(&self, builder: ProductBuilder) -> Product {
+        let product = &builder.build();
+        self.repository.save(product)
+    }
+
+    pub fn update(&self, product: &Product) -> Result<Product, Error> {
+        self.repository.update(product)
+    }
+
     pub fn get(&self, id: i32) -> Result<Product, Error> {
         self.repository.find_by_id(id)
     }
 
     pub fn get_by_sku(&self, sku: String) -> Result<Product, Error> {
         self.repository.find_by_sku(sku)
-    }
-
-    pub fn create(&self, builder: ProductBuilder) -> Product {
-        let product = &builder.build();
-        self.repository.save(product)
     }
 }

@@ -9,6 +9,7 @@ use crate::{
 
 pub trait ProductRepository {
     fn save(&self, product: &NewProduct) -> Product;
+    fn update(&self, product: &Product) -> Result<Product, Error>;
     fn find_by_id(&self, product_id: i32) -> Result<Product, Error>;
     fn find_by_sku(&self, qsku: String) -> Result<Product, Error>;
 }
@@ -31,6 +32,20 @@ impl ProductRepository for DProductRepository {
             .returning(Product::as_returning())
             .get_result(&mut conn)
             .expect("Failed to create a product")
+    }
+
+    fn update(&self, product: &Product) -> Result<Product, Error> {
+        let mut conn = self.pool.get().unwrap();
+        
+        match diesel::update(products)
+        .filter(id.eq(product.id))
+        .set(product)
+        .returning(Product::as_returning())
+        .get_result(&mut conn) 
+        {
+            Ok(data) => Ok(data),
+            Err(err) => Err(err)
+        }
     }
 
     fn find_by_id(&self, product_id: i32) -> Result<Product, Error> {

@@ -9,23 +9,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Payment } from "./PaymentArea";
 
-// Definindo um tipo Payment
-type Payment = {
-  id: number;
-  value: string;
-  method: string;
-};
+interface PaymentMethodsProps {
+  paymentsList: Payment[];
+  setPaymentsList: React.Dispatch<React.SetStateAction<Payment[]>>;
+}
 
-const PaymentMethods = () => {
-  // Estado para o formulário atual
+const PaymentMethods: React.FC<PaymentMethodsProps> = ({ paymentsList, setPaymentsList }) => {
   const [payment, setPayment] = useState<{ value: string; method: string }>({
     value: "",
     method: "",
   });
-
-  // Estado para a lista de pagamentos confirmados
-  const [paymentsList, setPaymentsList] = useState<Payment[]>([]);
 
   // Estado para controlar mensagens de erro
   const [error, setError] = useState<string>("");
@@ -54,38 +49,18 @@ const PaymentMethods = () => {
     if (error) setError("");
   };
 
-  // Função para confirmar o pagamento
-  const handleConfirmPayment = () => {
-    // Validações
-    if (!payment.value || payment.value.trim() === "") {
-      setError("Por favor, insira um valor para o pagamento.");
-      return;
-    }
+  // Função para adicionar o pagamento
+  const handleAddPayment = () => {
+    if (!payment.value || !payment.method) return;
 
-    if (!payment.method || payment.method.trim() === "") {
-      setError("Por favor, selecione um método de pagamento.");
-      return;
-    }
-
-    // Validar se o valor é um número válido e maior que 0
-    const numericValue = parseFloat(payment.value);
-    if (isNaN(numericValue) || numericValue <= 0) {
-      setError("Por favor, insira um valor válido maior que zero.");
-      return;
-    }
-
-    // Adicionar o pagamento à lista
     const newPayment: Payment = {
-      id: Date.now(), // ID simples baseado no timestamp
+      id: paymentsList.length + 1,
       value: payment.value,
       method: payment.method,
     };
 
-    setPaymentsList([...paymentsList, newPayment]);
-
-    // Limpar o formulário
-    setPayment({ value: "", method: "" });
-    setError("");
+    setPaymentsList((prev) => [...prev, newPayment]);
+    setPayment({ value: "", method: "" }); // limpa o form
   };
 
   // Função para remover um pagamento da lista
@@ -127,7 +102,7 @@ const PaymentMethods = () => {
               onChange={handleValueChange}
               placeholder="0,00"
             />
-            <Button onClick={handleConfirmPayment}>Confirmar</Button>
+            <Button onClick={handleAddPayment}>Confirmar</Button>
           </div>
         </div>
 
@@ -158,20 +133,20 @@ const PaymentMethods = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paymentsList.map((paymentItem) => (
-                  <TableRow key={paymentItem.id}>
+                {paymentsList.map((p) => (
+                  <TableRow key={p.id}>
                     <TableCell className="font-medium">
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => handleCancelClick(paymentItem.id)}
+                        onClick={() => handleCancelClick(p.id)}
                       >
                         X
                       </Button>
                     </TableCell>
-                    <TableCell>{paymentItem.method}</TableCell>
+                    <TableCell>{p.method}</TableCell>
                     <TableCell className="text-right">
-                      R$ {paymentItem.value}
+                      R$ {p.value}
                     </TableCell>
                   </TableRow>
                 ))}

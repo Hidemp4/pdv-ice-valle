@@ -1,18 +1,62 @@
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onAddProduct: (sku: string, qtd: number) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onAddProduct }) => {
+  
+  const [sku, setSku] = useState("");
+  const [qtdProduct, setQtdProduct] = useState(1);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (sku.trim()) {
+      onAddProduct(sku, qtdProduct);
+      setSku("");
+      setQtdProduct(1);
+    }
+  };
+
   return (
     <header className="header bg-gray-800 text-white mt-4 p-4 h-26">
-      <div className="flex items-center h-full gap-2">
-        <label htmlFor="codeNumber">Código</label>
-        <Input className="w-full h-12" type="number" placeholder="Número do código de barras" id="codeNumber"/>
-        <label htmlFor="qtdProduct">Qtd</label>
-        <Input className="w-26 h-12" type="number" placeholder="Qtd" id="qtdProduct"/>
-        <Button className="w-40 h-12 tracking-wide" type="submit" variant="outline">
-          Adicionar Manual
+      <form onSubmit={handleSubmit} className="flex items-center h-full gap-2">
+        <label htmlFor="codeNumber" className="text-sm font-medium">
+          Código
+        </label>
+        <Input
+          className="w-full h-12"
+          type="text"
+          placeholder="Digite o SKU do produto"
+          id="codeNumber"
+          value={sku}
+          onChange={(e) => setSku(e.target.value)}
+        />
+
+        <label htmlFor="qtdProduct" className="text-sm font-medium">
+          Qtd
+        </label>
+        <Input
+          className="w-20 h-12"
+          type="number"
+          placeholder="1"
+          id="qtdProduct"
+          min="1"
+          max="999"
+          value={qtdProduct}
+          onChange={(e) => setQtdProduct(Number(e.target.value))}
+        />
+
+        <Button
+          className="w-32 h-12 tracking-wide"
+          type="submit"
+          variant="outline"
+        >
+          Adicionar
         </Button>
-      </div>
+      </form>
     </header>
   );
 };

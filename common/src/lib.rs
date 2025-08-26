@@ -10,8 +10,6 @@ mod test {
         services::product_service::ProductService,
     };
 
-    use super::*;
-
     fn pool() -> DbPool {
         super::infrastructure::db_pool("test.db")
     }
@@ -44,5 +42,24 @@ mod test {
             product.stock, 2000,
             "A quantidade do produto é igual a quantidade esperada."
         );
+    }
+
+    #[test]
+    fn test_find_product_by_sku() {
+        let product = ProductBuilder::new("Coca cola", "COCA-2L-002", 15.99, 2000);
+        
+        let service = ProductService::new(self::pool());
+        service.create(product);
+
+        let qproduct = service.get_by_sku("COCA-2L-002");
+        match qproduct {
+            Ok(product) => {
+                assert_eq!(product.sku, "COCA-2L-002");
+            },
+            Err(err) => {
+                println!("Ocorreu um erro: {}", err);
+            },
+        }
+
     }
 }

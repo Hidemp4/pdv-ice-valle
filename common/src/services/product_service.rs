@@ -29,7 +29,7 @@ impl ProductService {
         self.repository.find_by_id(id)
     }
 
-    pub fn get_by_sku(&self, sku: String) -> Result<Product, Error> {
-        self.repository.find_by_sku(sku)
+    pub fn get_by_sku(&self, sku: impl Into<String>) -> Result<Product, Error> {
+        self.repository.find_by_sku(sku.into())
     }
 }

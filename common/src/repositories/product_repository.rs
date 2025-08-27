@@ -10,6 +10,7 @@ use crate::{
 };
 
 pub trait ProductRepository {
+    fn all(&self) -> Result<Vec<Product>, Error>;
     fn save(&self, product: &NewProduct) -> Result<Product, Error>;
     fn update(&self, product: &Product) -> Result<Product, Error>;
     fn find_by_id(&self, product_id: i32) -> Result<Product, Error>;
@@ -27,29 +28,37 @@ impl DProductRepository {
 }
 
 impl ProductRepository for DProductRepository {
+    fn all(&self) -> Result<Vec<Product>, Error> {
+        let mut conn = self.pool.get().unwrap();
+        match products.select(Product::as_select()).get_results(&mut conn) {
+            Ok(data) => Ok(data),
+            Err(err) => Err(err),
+        }
+    }
+
     fn save(&self, product: &NewProduct) -> Result<Product, Error> {
         let mut conn = self.pool.get().unwrap();
         match diesel::insert_into(products::table)
             .values(product)
             .returning(Product::as_returning())
-            .get_result(&mut conn) 
-            {
-                Ok(data) => Ok(data),
-                Err(err) => Err(err),
-            }
+            .get_result(&mut conn)
+        {
+            Ok(data) => Ok(data),
+            Err(err) => Err(err),
+        }
     }
 
     fn update(&self, product: &Product) -> Result<Product, Error> {
         let mut conn = self.pool.get().unwrap();
-        
+
         match diesel::update(products)
-        .filter(id.eq(product.id))
-        .set(product)
-        .returning(Product::as_returning())
-        .get_result(&mut conn) 
+            .filter(id.eq(product.id))
+            .set(product)
+            .returning(Product::as_returning())
+            .get_result(&mut conn)
         {
             Ok(data) => Ok(data),
-            Err(err) => Err(err)
+            Err(err) => Err(err),
         }
     }
 

@@ -42,8 +42,15 @@ pub async fn update_product(
 }
 
 #[tauri::command]
-pub async fn get_all_products(pool: State<'_, Arc<DbPool>>) -> Result<String, ()> {
-    Ok("all products".into())
+pub async fn get_all_products(
+    pool: State<'_, Arc<DbPool>>,
+) -> Result<DataResponse<Vec<ProductResponse>>, DataResponse<String>> {
+    let service = ProductService::new(pool.inner().clone());
+
+    match service.all() {
+        Ok(res) => Ok(DataResponse::success(ProductResponse::collection(res))),
+        Err(err) => Err(DataResponse::error(err.to_string())),
+    }
 }
 
 #[tauri::command]

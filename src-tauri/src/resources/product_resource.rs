@@ -37,3 +37,9 @@ impl From<Product> for ProductResponse {
         }
     }
 }
+
+impl ProductResponse {
+    pub fn collection(products: Vec<Product>) -> Vec<Self> {
+        products.into_iter().map(ProductResponse::from).collect()
+    }
+}

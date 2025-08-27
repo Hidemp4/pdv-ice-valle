@@ -18,13 +18,18 @@ impl ProductService {
         Self { repository }
     }
 
+    
     pub fn create(&self, builder: ProductBuilder) -> Result<Product, Error> {
         let product = &builder.build();
         self.repository.save(product)
     }
-
+    
     pub fn update(&self, product: &Product) -> Result<Product, Error> {
         self.repository.update(product)
+    }
+
+    pub fn all(&self) -> Result<Vec<Product>, Error> {
+        self.repository.all()
     }
 
     pub fn get(&self, id: i32) -> Result<Product, Error> {

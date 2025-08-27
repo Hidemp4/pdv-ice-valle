@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use diesel::result::Error;
 
 use crate::{
@@ -11,12 +13,12 @@ pub struct ProductService {
 }
 
 impl ProductService {
-    pub fn new(pool: DbPool) -> Self {
+    pub fn new(pool: Arc<DbPool>) -> Self {
         let repository = DProductRepository::new(pool);
         Self { repository }
     }
 
-    pub fn create(&self, builder: ProductBuilder) -> Product {
+    pub fn create(&self, builder: ProductBuilder) -> Result<Product, Error> {
         let product = &builder.build();
         self.repository.save(product)
     }

@@ -7,8 +7,9 @@ pub struct Product {
     pub id: i32,
     pub name: String,
     pub description: Option<String>,
-    pub sku: String,
     pub stock: i64,
+    pub price: f64,
+    pub sku: String,
     pub created_at: Option<chrono::NaiveDateTime>,
     pub updated_at: Option<chrono::NaiveDateTime>,
 }
@@ -32,10 +33,10 @@ pub struct ProductBuilder {
 }
 
 impl ProductBuilder {
-    pub fn new(name: impl Into<String>, sku: impl Into<String>, price: f64, stock: i64) -> Self {
+    pub fn new(name: impl Into<String>, description: impl Into<String>, sku: impl Into<String>, price: f64, stock: i64) -> Self {
         Self {
             name: name.into(),
-            description: None,
+            description: Some(description.into()),
             sku: sku.into(),
             price,
             stock,

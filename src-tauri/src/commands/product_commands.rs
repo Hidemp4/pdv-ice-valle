@@ -6,13 +6,16 @@ use pdcommon::{
 };
 use tauri::State;
 
-use crate::resources::product_resource::{ProductRequest, ProductResponse};
+use crate::resources::{
+    product_resource::{ProductRequest, ProductResponse},
+    DataResponse,
+};
 
 #[tauri::command]
 pub async fn create_product(
     product: ProductRequest,
     pool: State<'_, Arc<DbPool>>,
-) -> Result<ProductResponse, String> {
+) -> Result<DataResponse<ProductResponse>, DataResponse<String>> {
     let service = ProductService::new(pool.inner().clone());
 
     let builder = ProductBuilder::new(
@@ -22,10 +25,10 @@ pub async fn create_product(
         product.price,
         product.stock,
     );
-    
+
     match service.create(builder) {
-        Ok(res) => Ok(ProductResponse::from(res)),
-        Err(err) => Err(err.to_string())
+        Ok(res) => Ok(DataResponse::success(ProductResponse::from(res))),
+        Err(err) => Err(DataResponse::error(err.to_string())),
     }
 }
 
@@ -44,7 +47,14 @@ pub async fn get_all_products(pool: State<'_, Arc<DbPool>>) -> Result<String, ()
 }
 
 #[tauri::command]
-pub async fn get_product_by_sku(pool: State<'_, Arc<DbPool>>, sku: String) -> Result<String, ()> {
-    println!("sku: {:#?}", sku);
-    Ok("product sku".into())
+pub async fn get_product_by_sku(
+    sku: String,
+    pool: State<'_, Arc<DbPool>>,
+) -> Result<DataResponse<ProductResponse>, DataResponse<String>> {
+    let service = ProductService::new(pool.inner().clone());
+
+    match service.get_by_sku(sku) {
+        Ok(res) => Ok(DataResponse::success(ProductResponse::from(res))),
+        Err(err) => Err(DataResponse::error(err.to_string())),
+    }
 }

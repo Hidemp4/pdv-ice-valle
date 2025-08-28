@@ -29,9 +29,9 @@ diesel::table! {
         id -> Integer,
         sale_id -> Integer,
         product_id -> Integer,
-        quantity -> Nullable<Double>,
-        unit_price -> Nullable<Double>,
-        subtotal -> Nullable<Double>,
+        quantity -> Double,
+        unit_price -> Double,
+        subtotal -> Double,
         created_at -> Nullable<Timestamp>,
         updated_at -> Nullable<Timestamp>,
     }

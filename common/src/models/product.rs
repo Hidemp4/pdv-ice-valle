@@ -1,3 +1,4 @@
+use chrono::NaiveDateTime;
 use diesel::prelude::*;
 
 #[derive(Insertable, Queryable, QueryableByName, Selectable, AsChangeset)]
@@ -33,7 +34,13 @@ pub struct ProductBuilder {
 }
 
 impl ProductBuilder {
-    pub fn new(name: impl Into<String>, description: impl Into<String>, sku: impl Into<String>, price: f64, stock: i64) -> Self {
+    pub fn new(
+        name: impl Into<String>,
+        description: impl Into<String>,
+        sku: impl Into<String>,
+        price: f64,
+        stock: i64,
+    ) -> Self {
         Self {
             name: name.into(),
             description: Some(description.into()),

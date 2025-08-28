@@ -1,2 +1,2 @@
-pub mod schema;
 pub mod product;
+pub mod schema;

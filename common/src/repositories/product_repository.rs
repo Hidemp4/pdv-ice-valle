@@ -2,6 +2,7 @@ use std::sync::Arc;
 
 use self::schema::products::dsl::*;
 use crate::models::{product::NewProduct, schema};
+use chrono::Utc;
 use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper, result::Error};
 
 use crate::{
@@ -12,7 +13,7 @@ use crate::{
 pub trait ProductRepository {
     fn all(&self) -> Result<Vec<Product>, Error>;
     fn save(&self, product: &NewProduct) -> Result<Product, Error>;
-    fn update(&self, product: &Product) -> Result<Product, Error>;
+    fn update(&self, product_id: i32, product: &Product) -> Result<Product, Error>;
     fn find_by_id(&self, product_id: i32) -> Result<Product, Error>;
     fn find_by_sku(&self, qsku: String) -> Result<Product, Error>;
 }
@@ -48,11 +49,11 @@ impl ProductRepository for DProductRepository {
         }
     }
 
-    fn update(&self, product: &Product) -> Result<Product, Error> {
+    fn update(&self, product_id: i32, product: &Product) -> Result<Product, Error> {
         let mut conn = self.pool.get().unwrap();
 
         match diesel::update(products)
-            .filter(id.eq(product.id))
+            .filter(id.eq(product_id))
             .set(product)
             .returning(Product::as_returning())
             .get_result(&mut conn)

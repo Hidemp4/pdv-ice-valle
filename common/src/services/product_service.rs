@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use chrono::{NaiveDate, NaiveDateTime, Utc};
 use diesel::result::Error;
 
 use crate::{
@@ -18,14 +19,13 @@ impl ProductService {
         Self { repository }
     }
 
-    
     pub fn create(&self, builder: ProductBuilder) -> Result<Product, Error> {
         let product = &builder.build();
         self.repository.save(product)
     }
-    
-    pub fn update(&self, product: &Product) -> Result<Product, Error> {
-        self.repository.update(product)
+
+    pub fn update(&self, product_id: i32, product: &Product) -> Result<Product, Error> {
+        self.repository.update(product_id, product)
     }
 
     pub fn all(&self) -> Result<Vec<Product>, Error> {

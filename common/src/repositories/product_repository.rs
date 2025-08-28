@@ -13,6 +13,7 @@ pub struct DProductRepository {
     pool: Arc<DbPool>,
 }
 
+// The keyword "D" represents a diesel repository
 impl DProductRepository {
     pub fn new(pool: Arc<DbPool>) -> Self {
         Self { pool }
@@ -30,6 +31,7 @@ pub trait ProductRepository {
 impl ProductRepository for DProductRepository {
     fn all(&self) -> Result<Vec<Product>, Error> {
         let mut conn = self.pool.get().unwrap();
+
         match products.select(Product::as_select()).get_results(&mut conn) {
             Ok(data) => Ok(data),
             Err(err) => Err(err),

@@ -1,5 +1,8 @@
 use chrono::NaiveDateTime;
-use diesel::{prelude::{AsChangeset, Insertable, QueryableByName}, Selectable};
+use diesel::{
+    Selectable,
+    prelude::{AsChangeset, Insertable, QueryableByName},
+};
 
 #[derive(Insertable, QueryableByName, Selectable, AsChangeset)]
 #[diesel(table_name = crate::models::schema::sales)]
@@ -30,6 +33,12 @@ pub struct SaleBuilder {
     status: Option<String>,
 }
 
+pub enum SaleStatus {
+    SaleOpen,
+    SaleClosed,
+    SaleCanceled,
+}
+
 impl SaleBuilder {
     pub fn new(total_gross: f64, total_net: f64, payment_method: String) -> Self {
         Self {
@@ -55,8 +64,14 @@ impl SaleBuilder {
         self
     }
 
-    pub fn status(mut self, status: impl Into<String>) -> Self {
-        self.status = Some(status.into());
+    pub fn status(mut self, status: SaleStatus) -> Self {
+        let status_match = match status {
+            SaleStatus::SaleOpen => "SaleOpen",
+            SaleStatus::SaleClosed => "Closed",
+            SaleStatus::SaleCanceled => "Canceled",
+        };
+
+        self.status = Some(String::from(status_match));
         self
     }
 }

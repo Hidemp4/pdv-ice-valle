@@ -9,14 +9,6 @@ use crate::{
     models::{product::Product, schema::products},
 };
 
-pub trait ProductRepository {
-    fn all(&self) -> Result<Vec<Product>, Error>;
-    fn save(&self, product: &NewProduct) -> Result<Product, Error>;
-    fn update(&self, product_id: i32, product: &Product) -> Result<Product, Error>;
-    fn find_by_id(&self, product_id: i32) -> Result<Product, Error>;
-    fn find_by_sku(&self, qsku: String) -> Result<Product, Error>;
-}
-
 pub struct DProductRepository {
     pool: Arc<DbPool>,
 }
@@ -25,6 +17,14 @@ impl DProductRepository {
     pub fn new(pool: Arc<DbPool>) -> Self {
         Self { pool }
     }
+}
+
+pub trait ProductRepository {
+    fn all(&self) -> Result<Vec<Product>, Error>;
+    fn save(&self, product: &NewProduct) -> Result<Product, Error>;
+    fn update(&self, product_id: i32, product: &Product) -> Result<Product, Error>;
+    fn find_by_id(&self, product_id: i32) -> Result<Product, Error>;
+    fn find_by_sku(&self, qsku: String) -> Result<Product, Error>;
 }
 
 impl ProductRepository for DProductRepository {

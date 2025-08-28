@@ -1,6 +1,4 @@
 use std::sync::Arc;
-
-use chrono::{NaiveDate, NaiveDateTime, Utc};
 use diesel::result::Error;
 
 use crate::{

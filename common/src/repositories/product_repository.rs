@@ -2,7 +2,6 @@ use std::sync::Arc;
 
 use self::schema::products::dsl::*;
 use crate::models::{product::NewProduct, schema};
-use chrono::Utc;
 use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper, result::Error};
 
 use crate::{

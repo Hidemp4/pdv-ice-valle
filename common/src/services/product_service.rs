@@ -1,5 +1,5 @@
-use std::sync::Arc;
 use diesel::result::Error;
+use std::sync::Arc;
 
 use crate::{
     infrastructure::DbPool,
@@ -17,6 +17,10 @@ impl ProductService {
         Self { repository }
     }
 
+    pub fn all(&self) -> Result<Vec<Product>, Error> {
+        self.repository.all()
+    }
+
     pub fn create(&self, builder: ProductBuilder) -> Result<Product, Error> {
         let product = &builder.build();
         self.repository.save(product)
@@ -24,10 +28,6 @@ impl ProductService {
 
     pub fn update(&self, product_id: i32, product: &Product) -> Result<Product, Error> {
         self.repository.update(product_id, product)
-    }
-
-    pub fn all(&self) -> Result<Vec<Product>, Error> {
-        self.repository.all()
     }
 
     pub fn get(&self, id: i32) -> Result<Product, Error> {

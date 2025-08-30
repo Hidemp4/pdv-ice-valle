@@ -5,7 +5,7 @@ use diesel::result::Error;
 use crate::{
     infrastructure::DbPool,
     models::stock_movement::{StockMovement, StockMovementBuilder},
-    repositories::stock_movements::{DStockMovementsRepository, StockMovementRepository},
+    repositories::stock_movements_repository::{DStockMovementsRepository, StockMovementRepository},
 };
 
 pub struct StockMovementService {

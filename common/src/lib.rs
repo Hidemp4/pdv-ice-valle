@@ -17,7 +17,7 @@ mod test {
         Arc::new(super::infrastructure::db_pool("test.db"))
     }
 
-    // #[test]
+    #[test]
     fn test_product_builder() {
         let product =
             ProductBuilder::new("Biscoito traquinas", "xxx", "BISC-20G-001", 8.99, 2000).build();
@@ -27,7 +27,7 @@ mod test {
         assert_eq!(product.stock, 2000);
     }
 
-    // #[test]
+    #[test]
     fn test_create_new_product() {
         let product = ProductBuilder::new("Biscoito traquinas", "xxx", "BISC-20G-001", 8.99, 2000);
         let service = ProductService::new(self::pool());
@@ -69,7 +69,7 @@ mod test {
         service.update(product.id, &new_data).unwrap();
     }
 
-    // #[test]
+    #[test]
     fn test_find_product_by_sku() {
         let product = ProductBuilder::new("Coca cola", "xxx", "COCA-2L-002", 8.99, 2000);
 

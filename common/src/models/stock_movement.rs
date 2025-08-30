@@ -74,4 +74,13 @@ impl StockMovementBuilder {
         self.move_type = String::from(move_match);
         self
     }
+
+    pub fn build(self) -> NewStockMovement {
+        NewStockMovement {
+            product_id: self.product_id,
+            move_type: self.move_type,
+            quantity: self.quantity,
+            origin: self.origin,
+        }
+    }
 }

@@ -22,8 +22,8 @@ impl StockService {
         self.repository.all()
     }
 
-    pub fn create(&self, stock: StockBuilder) -> Result<Stock, Error> {
-        let stock = &stock.build();
+    pub fn create(&self, builder: StockBuilder) -> Result<Stock, Error> {
+        let stock = &builder.build();
         self.repository.save(stock)
     }
 

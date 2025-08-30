@@ -75,6 +75,7 @@ diesel::joinable!(products -> categories (category_id));
 diesel::joinable!(saleitems -> products (product_id));
 diesel::joinable!(saleitems -> sales (sale_id));
 diesel::joinable!(stock -> products (product_id));
+diesel::joinable!(stockmovements -> products (product_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     categories,

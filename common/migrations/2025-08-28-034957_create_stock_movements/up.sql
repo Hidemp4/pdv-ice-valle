@@ -8,7 +8,7 @@ CREATE TABLE
         origin varchar(100) not null,
         created_at DateTime null default (DateTime (CURRENT_TIMESTAMP, 'localtime')),
         updated_at DateTime null,
-        FOREIGN KEY (product_id) References products (product_id)
+        FOREIGN KEY (product_id) References products (id)
     );
 
 CREATE TRIGGER update_stockmovements_updated_at AFTER

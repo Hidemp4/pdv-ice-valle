@@ -1,10 +1,9 @@
 use chrono::NaiveDateTime;
 use diesel::{
-    Selectable,
-    prelude::{AsChangeset, Insertable, QueryableByName},
+    prelude::{AsChangeset, Insertable, Queryable, QueryableByName}, Selectable
 };
 
-#[derive(Insertable, QueryableByName, Selectable, AsChangeset)]
+#[derive(Insertable, Queryable, QueryableByName, Selectable, AsChangeset)]
 #[diesel(table_name = crate::models::schema::sales)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Sale {

@@ -1,8 +1,13 @@
 use std::sync::Arc;
 
 use self::schema::products::dsl::*;
-use crate::models::{product::NewProduct, schema};
-use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper, result::Error};
+use crate::models::{
+    category::Category,
+    product::NewProduct,
+    schema::{self, categories},
+};
+use diesel::prelude::*;
+use diesel::result::Error;
 
 use crate::{
     infrastructure::DbPool,
@@ -21,18 +26,22 @@ impl DProductRepository {
 }
 
 pub trait ProductRepository {
-    fn all(&self) -> Result<Vec<Product>, Error>;
+    fn all(&self) -> Result<Vec<(Product, Category)>, Error>;
     fn save(&self, product: &NewProduct) -> Result<Product, Error>;
     fn update(&self, product_id: i32, product: &Product) -> Result<Product, Error>;
-    fn find_by_id(&self, product_id: i32) -> Result<Product, Error>;
-    fn find_by_sku(&self, qsku: String) -> Result<Product, Error>;
+    fn find_by_id(&self, product_id: i32) -> Result<(Product, Category), Error>;
+    fn find_by_sku(&self, qsku: String) -> Result<(Product, Category), Error>;
 }
 
 impl ProductRepository for DProductRepository {
-    fn all(&self) -> Result<Vec<Product>, Error> {
+    fn all(&self) -> Result<Vec<(Product, Category)>, Error> {
         let mut conn = self.pool.get().unwrap();
 
-        match products.select(Product::as_select()).get_results(&mut conn) {
+        match products
+            .inner_join(categories::table)
+            .select((Product::as_select(), Category::as_select()))
+            .get_results(&mut conn)
+        {
             Ok(data) => Ok(data),
             Err(err) => Err(err),
         }
@@ -64,27 +73,29 @@ impl ProductRepository for DProductRepository {
         }
     }
 
-    fn find_by_id(&self, product_id: i32) -> Result<Product, Error> {
+    fn find_by_id(&self, product_id: i32) -> Result<(Product, Category), Error> {
         let mut conn = self.pool.get().unwrap();
-        let result = products
-            .filter(id.eq(product_id))
-            .select(Product::as_select())
-            .get_result::<Product>(&mut conn);
 
-        match result {
+        match products
+            .filter(id.eq(product_id))
+            .inner_join(categories::table)
+            .select((Product::as_select(), Category::as_select()))
+            .get_result::<(Product, Category)>(&mut conn)
+        {
             Ok(data) => Ok(data),
             Err(err) => Err(err),
         }
     }
 
-    fn find_by_sku(&self, qsku: String) -> Result<Product, Error> {
+    fn find_by_sku(&self, qsku: String) -> Result<(Product, Category), Error> {
         let mut conn = self.pool.get().unwrap();
-        let result = products
-            .filter(sku.eq(qsku))
-            .select(Product::as_select())
-            .get_result::<Product>(&mut conn);
 
-        match result {
+        match products
+            .filter(sku.eq(qsku))
+            .inner_join(categories::table)
+            .select((Product::as_select(), Category::as_select()))
+            .get_result(&mut conn)
+        {
             Ok(data) => Ok(data),
             Err(err) => Err(err),
         }

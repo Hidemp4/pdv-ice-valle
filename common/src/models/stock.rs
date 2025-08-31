@@ -1,10 +1,10 @@
+use crate::models::product::Product;
 use chrono::NaiveDateTime;
-use diesel::{
-    prelude::{AsChangeset, Insertable, Queryable, QueryableByName}, Selectable
-};
+use diesel::prelude::*;
 
-#[derive(Insertable, Queryable, QueryableByName, Selectable, AsChangeset)]
+#[derive(Insertable, Queryable, QueryableByName, Selectable, AsChangeset, Associations)]
 #[diesel(table_name = crate::models::schema::stock)]
+#[diesel(belongs_to(Product))]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Stock {
     pub id: i32,

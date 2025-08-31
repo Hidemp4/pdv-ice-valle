@@ -18,7 +18,6 @@ diesel::table! {
         category_id -> Nullable<Integer>,
         sku -> Text,
         price -> Double,
-        stock -> BigInt,
         created_at -> Nullable<Timestamp>,
         updated_at -> Nullable<Timestamp>,
     }

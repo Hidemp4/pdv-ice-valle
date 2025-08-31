@@ -1,13 +1,15 @@
 use diesel::prelude::*;
+use crate::models::category::Category;
 
-#[derive(Insertable, Queryable, QueryableByName, Selectable, AsChangeset)]
+#[derive(Insertable, Queryable, QueryableByName, Selectable, AsChangeset, Associations)]
 #[diesel(table_name = crate::models::schema::products)]
+#[diesel(belongs_to(Category))]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Product {
     pub id: i32,
     pub name: String,
     pub description: Option<String>,
-    pub stock: i64,
+    pub category_id: Option<i32>,
     pub price: f64,
     pub sku: String,
     pub created_at: Option<chrono::NaiveDateTime>,
@@ -19,17 +21,18 @@ pub struct Product {
 pub struct NewProduct {
     pub name: String,
     pub description: Option<String>,
+    pub category_id: Option<i32>,
     pub sku: String,
     pub price: f64,
-    pub stock: i64,
 }
 
+#[derive(Debug)]
 pub struct ProductBuilder {
     name: String,
     description: Option<String>,
+    catagory_id: Option<i32>,
     sku: String,
     price: f64,
-    stock: i64,
 }
 
 impl ProductBuilder {
@@ -38,14 +41,13 @@ impl ProductBuilder {
         description: impl Into<String>,
         sku: impl Into<String>,
         price: f64,
-        stock: i64,
     ) -> Self {
         Self {
             name: name.into(),
             description: Some(description.into()),
+            catagory_id: None,
             sku: sku.into(),
             price,
-            stock,
         }
     }
 
@@ -64,13 +66,13 @@ impl ProductBuilder {
         self
     }
 
-    pub fn stock(mut self, stock: i64) -> Self {
-        self.stock = stock;
+    pub fn description(mut self, description: impl Into<String>) -> Self {
+        self.description = Some(description.into());
         self
     }
 
-    pub fn description(mut self, description: impl Into<String>) -> Self {
-        self.description = Some(description.into());
+    pub fn category(mut self, category_id: i32) -> Self {
+        self.catagory_id = Some(category_id);
         self
     }
 
@@ -78,9 +80,9 @@ impl ProductBuilder {
         NewProduct {
             name: self.name,
             description: self.description,
+            category_id: self.catagory_id,
             sku: self.sku,
             price: self.price,
-            stock: self.stock,
         }
     }
 }

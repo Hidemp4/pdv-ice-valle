@@ -24,6 +24,7 @@ pub fn run() {
             commands::product_commands::create_product,
             commands::product_commands::update_product,
             commands::product_commands::get_all_products,
+            commands::product_commands::get_product_by_id,
             commands::product_commands::get_product_by_sku,
             /* category commands */
             commands::category_commands::create_category,

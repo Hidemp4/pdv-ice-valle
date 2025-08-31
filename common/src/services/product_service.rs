@@ -3,7 +3,10 @@ use std::sync::Arc;
 
 use crate::{
     infrastructure::DbPool,
-    models::product::{Product, ProductBuilder},
+    models::{
+        category::Category,
+        product::{Product, ProductBuilder},
+    },
     repositories::product_repository::{DProductRepository, ProductRepository},
 };
 
@@ -17,7 +20,7 @@ impl ProductService {
         Self { repository }
     }
 
-    pub fn all(&self) -> Result<Vec<Product>, Error> {
+    pub fn all(&self) -> Result<Vec<(Product, Category)>, Error> {
         self.repository.all()
     }
 
@@ -30,11 +33,11 @@ impl ProductService {
         self.repository.update(product_id, product)
     }
 
-    pub fn get(&self, id: i32) -> Result<Product, Error> {
+    pub fn get(&self, id: i32) -> Result<(Product, Category), Error> {
         self.repository.find_by_id(id)
     }
 
-    pub fn get_by_sku(&self, sku: impl Into<String>) -> Result<Product, Error> {
+    pub fn get_by_sku(&self, sku: impl Into<String>) -> Result<(Product, Category), Error> {
         self.repository.find_by_sku(sku.into())
     }
 }

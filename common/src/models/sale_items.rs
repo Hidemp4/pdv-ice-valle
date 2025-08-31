@@ -1,8 +1,5 @@
 use chrono::NaiveDateTime;
-use diesel::{
-    Selectable,
-    prelude::{AsChangeset, Insertable, Queryable, QueryableByName},
-};
+use diesel::prelude::*;
 
 #[derive(Insertable, Queryable, QueryableByName, Selectable, AsChangeset)]
 #[diesel(table_name = crate::models::schema::saleitems)]

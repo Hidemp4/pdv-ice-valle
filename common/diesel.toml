@@ -6,4 +6,4 @@ file = "src/models/schema.rs"
 custom_type_derives = ["diesel::query_builder::QueryId", "Clone"]
 
 [migrations_directory]
-dir = "D:\\Projects\\pdv-ice-valle\\common\\migrations"
+dir = "C:\\Users\\augus\\Projects\\pdv-ice-valle\\common\\migrations"

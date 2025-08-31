@@ -1,9 +1,7 @@
 use chrono::NaiveDateTime;
-use diesel::{
-    prelude::{AsChangeset, Insertable, Queryable, QueryableByName}, Selectable
-};
+use diesel::prelude::*;
 
-#[derive(Insertable, Queryable, QueryableByName, Selectable, AsChangeset)]
+#[derive(Identifiable, Insertable, Queryable, QueryableByName, Selectable, AsChangeset)]
 #[diesel(table_name = crate::models::schema::categories)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Category {
@@ -24,6 +22,18 @@ pub struct NewCategory {
 pub struct CategoryBuilder {
     name: String,
     description: Option<String>,
+}
+
+impl From<NewCategory> for Category {
+    fn from(value: NewCategory) -> Self {
+        Self {
+            id: 0,
+            name: value.name,
+            description: value.description,
+            created_at: None,
+            updated_at: None,
+        }
+    }
 }
 
 impl CategoryBuilder {

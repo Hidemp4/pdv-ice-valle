@@ -1,5 +1,8 @@
 use chrono::NaiveDateTime;
-use diesel::{prelude::{AsChangeset, Insertable, Queryable, QueryableByName}, Selectable};
+use diesel::{
+    Selectable,
+    prelude::{AsChangeset, Insertable, Queryable, QueryableByName},
+};
 
 #[derive(Insertable, Queryable, QueryableByName, Selectable, AsChangeset)]
 #[diesel(table_name = crate::models::schema::saleitems)]
@@ -67,5 +70,15 @@ impl SaleItemsBuilder {
     pub fn subtotal(mut self, subtotal: f64) -> Self {
         self.subtotal = subtotal;
         self
+    }
+
+    pub fn build(self) -> NewSaleItems {
+        NewSaleItems {
+            sale_id: self.sale_id,
+            product_id: self.product_id,
+            quantity: self.quantity,
+            unit_price: self.unit_price,
+            subtotal: self.subtotal,
+        }
     }
 }

@@ -5,12 +5,11 @@ use pdcommon::{
     models::category::{Category, CategoryBuilder},
     services::category_service::CategoryService,
 };
-use tauri::State;
-
-use crate::resources::{
+use pdcontract::resources::{
     category_resource::{CategoryRequest, CategoryResponse},
     DataResponse,
 };
+use tauri::State;
 
 #[tauri::command]
 pub fn create_category(

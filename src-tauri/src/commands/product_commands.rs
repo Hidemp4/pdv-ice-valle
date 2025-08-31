@@ -1,14 +1,15 @@
 use std::sync::Arc;
 
 use pdcommon::{
-    infrastructure::DbPool, models::product::{Product, ProductBuilder},
+    infrastructure::DbPool,
+    models::product::{Product, ProductBuilder},
     services::product_service::ProductService,
 };
-use tauri::State;
-use crate::resources::{
+use pdcontract::resources::{
     product_resource::{ProductRequest, ProductResponse},
     DataResponse,
 };
+use tauri::State;
 
 #[tauri::command]
 pub async fn create_product(
@@ -41,7 +42,7 @@ pub async fn update_product(
 
     match service.update(product_id, &Product::from(data)) {
         Ok(res) => Ok(DataResponse::success(ProductResponse::from(res))),
-        Err(err) => Err(DataResponse::error(err.to_string()))
+        Err(err) => Err(DataResponse::error(err.to_string())),
     }
 }
 

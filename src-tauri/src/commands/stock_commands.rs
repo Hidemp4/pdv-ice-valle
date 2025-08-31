@@ -5,22 +5,18 @@ use pdcommon::{
     models::stock::{Stock, StockBuilder},
     services::stock_service::StockService,
 };
+use pdcontract::resources::{stock_resource::{StockRequest, StockResponse}, DataResponse};
 use tauri::State;
-
-use crate::resources::{
-    stock_resource::{StockRequest, StockResponse},
-    DataResponse,
-};
 
 #[tauri::command]
 pub fn create_stock_item(
-    req: StockRequest,
+    stock_item: StockRequest,
     pool: State<'_, Arc<DbPool>>,
 ) -> Result<DataResponse<StockResponse>, DataResponse<String>> {
     let service = StockService::new(pool.inner().clone());
 
-    let builder = StockBuilder::new(req.product_id);
-    let builder = if let Some(quantity) = req.quantity {
+    let builder = StockBuilder::new(stock_item.product_id);
+    let builder = if let Some(quantity) = stock_item.quantity {
         builder.quantity(quantity)
     } else {
         builder
@@ -34,12 +30,12 @@ pub fn create_stock_item(
 
 #[tauri::command]
 pub fn update_stock_item(
-    req: StockRequest,
+    stock_item: StockRequest,
     pool: State<'_, Arc<DbPool>>,
 ) -> Result<DataResponse<StockResponse>, DataResponse<String>> {
     let service = StockService::new(pool.inner().clone());
 
-    match service.update(&Stock::from(req)) {
+    match service.update(&Stock::from(stock_item)) {
         Ok(res) => Ok(DataResponse::success(StockResponse::from(res))),
         Err(err) => Err(DataResponse::error(err.to_string())),
     }

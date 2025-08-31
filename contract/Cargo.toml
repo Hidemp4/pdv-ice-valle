@@ -1,0 +1,9 @@
+[package]
+name = "pdcontract"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+chrono = { version = "0.4.41", features = ["serde"] }
+pdcommon = { path = "../common" }
+serde = "1.0.219"

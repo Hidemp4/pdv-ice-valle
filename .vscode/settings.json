@@ -1,6 +1,7 @@
 {
     "rust-analyzer.linkedProjects": [
         "common/Cargo.toml",
-        "src-tauri/Cargo.toml"
+        "contract/Cargo.toml",
+        "src-tauri/Cargo.toml",
     ]
 }

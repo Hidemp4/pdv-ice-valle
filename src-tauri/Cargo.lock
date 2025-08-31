@@ -2580,11 +2580,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "pdcontract"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "pdcommon",
+ "serde",
+]
+
+[[package]]
 name = "pdv"
 version = "0.1.0"
 dependencies = [
  "chrono",
  "pdcommon",
+ "pdcontract",
  "serde",
  "serde_json",
  "specta",
@@ -3584,9 +3594,9 @@ dependencies = [
 
 [[package]]
 name = "specta"
-version = "2.0.0-rc.22"
+version = "2.0.0-rc.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ab7f01e9310a820edd31c80fde3cae445295adde21a3f9416517d7d65015b971"
+checksum = "5a48619e9b708126cd585220ffae0bcbcae3ee3aa720f9210677a0f1b4d9a77f"
 dependencies = [
  "serde",
  "thiserror 1.0.69",

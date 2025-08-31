@@ -33,7 +33,7 @@ pub fn run() {
             commands::category_commands::get_category_by_id,
             /* stock commands */
             commands::stock_commands::create_stock_item,
-            commands::stock_commands::create_stock_item,
+            commands::stock_commands::update_stock_item,
             commands::stock_commands::get_all_stock_items,
             commands::stock_commands::get_stock_item_by_id,
         ])

@@ -1,6 +1,6 @@
 use serde::Serialize;
 pub mod product_resource;
-
+pub mod category_resource;
 
 #[derive(Serialize)]
 pub struct  DataResponse<T> {

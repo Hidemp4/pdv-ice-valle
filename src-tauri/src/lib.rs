@@ -21,10 +21,16 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            /* product commands */
             commands::product_commands::create_product,
             commands::product_commands::update_product,
             commands::product_commands::get_all_products,
-            commands::product_commands::get_product_by_sku
+            commands::product_commands::get_product_by_sku,
+            /* category commands */
+            commands::category_commands::create_category,
+            commands::category_commands::update_category,
+            commands::category_commands::get_all_categories,
+            commands::category_commands::get_category_by_id
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

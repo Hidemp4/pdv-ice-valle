@@ -1,6 +1,7 @@
 use chrono::NaiveDateTime;
 use diesel::{
-    prelude::{AsChangeset, Insertable, Queryable, QueryableByName}, Selectable
+    Selectable,
+    prelude::{AsChangeset, Insertable, Queryable, QueryableByName},
 };
 
 #[derive(Insertable, Queryable, QueryableByName, Selectable, AsChangeset)]
@@ -72,5 +73,14 @@ impl SaleBuilder {
 
         self.status = Some(String::from(status_match));
         self
+    }
+
+    pub fn build(self) -> NewSale {
+        NewSale {
+            total_gross: self.total_gross,
+            total_net: self.total_net,
+            payment_method: self.payment_method,
+            status: self.status,
+        }
     }
 }

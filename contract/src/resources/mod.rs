@@ -2,6 +2,7 @@ use serde::Serialize;
 pub mod category_resource;
 pub mod product_resource;
 pub mod stock_resource;
+pub mod stock_movement_resource;
 
 #[derive(Serialize)]
 pub struct DataResponse<T> {

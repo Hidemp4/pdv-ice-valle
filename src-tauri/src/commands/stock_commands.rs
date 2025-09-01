@@ -5,7 +5,10 @@ use pdcommon::{
     models::stock::{Stock, StockBuilder},
     services::stock_service::StockService,
 };
-use pdcontract::resources::{stock_resource::{StockRequest, StockResponse}, DataResponse};
+use pdcontract::resources::{
+    stock_resource::{StockRequest, StockResponse},
+    DataResponse,
+};
 use tauri::State;
 
 #[tauri::command]
@@ -14,14 +17,8 @@ pub fn create_stock_item(
     pool: State<'_, Arc<DbPool>>,
 ) -> Result<DataResponse<StockResponse>, DataResponse<String>> {
     let service = StockService::new(pool.inner().clone());
-
-    let builder = StockBuilder::new(stock_item.product_id);
-    let builder = if let Some(quantity) = stock_item.quantity {
-        builder.quantity(quantity)
-    } else {
-        builder
-    };
-
+    
+    let builder = StockBuilder::new(stock_item.product_id, stock_item.quantity);
     match service.create(builder) {
         Ok(res) => Ok(DataResponse::success(StockResponse::from(res))),
         Err(err) => Err(DataResponse::error(err.to_string())),
@@ -65,3 +62,12 @@ pub fn get_stock_item_by_id(
         Err(err) => Err(DataResponse::error(err.to_string())),
     }
 }
+
+// #[tauri::command]
+// pub fn create_stock_movement(pool: State<'_, Arc<DbPool>>) {}
+
+// #[tauri::command]
+// pub fn update_stock_movement(pool: State<'_, Arc<DbPool>>) {}
+
+// #[tauri::command]
+// pub fn get_stock_movement_by_id(pool: State<'_, Arc<DbPool>>) {}

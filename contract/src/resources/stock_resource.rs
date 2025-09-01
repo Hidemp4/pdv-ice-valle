@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 pub struct StockResponse {
     pub id: i32,
     pub product_id: i32,
-    pub quantity: Option<f64>,
+    pub quantity: f64,
     pub created_at: Option<NaiveDateTime>,
     pub updated_at: Option<NaiveDateTime>,
 }
@@ -15,7 +15,7 @@ pub struct StockResponse {
 pub struct StockRequest {
     pub id: Option<i32>,
     pub product_id: i32,
-    pub quantity: Option<f64>,
+    pub quantity: f64,
     pub created_at: Option<NaiveDateTime>,
     pub updated_at: Option<NaiveDateTime>,
 }

@@ -1,4 +1,4 @@
-use chrono::{DateTime, NaiveDateTime};
+use chrono::NaiveDateTime;
 use pdcommon::models::stock_movement::{MoveType, StockMovement};
 use serde::{Deserialize, Serialize};
 

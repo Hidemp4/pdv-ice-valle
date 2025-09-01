@@ -9,7 +9,7 @@ use diesel::prelude::*;
 pub struct Stock {
     pub id: i32,
     pub product_id: i32,
-    pub quantity: Option<f64>,
+    pub quantity: f64,
     pub created_at: Option<NaiveDateTime>,
     pub updated_at: Option<NaiveDateTime>,
 }
@@ -18,19 +18,19 @@ pub struct Stock {
 #[diesel(table_name = crate::models::schema::stock)]
 pub struct NewStock {
     pub product_id: i32,
-    pub quantity: Option<f64>,
+    pub quantity: f64,
 }
 
 pub struct StockBuilder {
     product_id: i32,
-    quantity: Option<f64>,
+    quantity: f64,
 }
 
 impl StockBuilder {
-    pub fn new(product_id: i32) -> Self {
+    pub fn new(product_id: i32, quantity: f64) -> Self {
         Self {
-            product_id: product_id,
-            quantity: None,
+            product_id,
+            quantity,
         }
     }
 
@@ -40,7 +40,7 @@ impl StockBuilder {
     }
 
     pub fn quantity(mut self, quantity: f64) -> Self {
-        self.quantity = Some(quantity);
+        self.quantity = quantity;
         self
     }
 

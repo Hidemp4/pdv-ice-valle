@@ -52,7 +52,7 @@ diesel::table! {
     stock (id) {
         id -> Integer,
         product_id -> Integer,
-        quantity -> Nullable<Double>,
+        quantity -> Double,
         created_at -> Nullable<Timestamp>,
         updated_at -> Nullable<Timestamp>,
     }
@@ -65,6 +65,7 @@ diesel::table! {
         move_type -> Text,
         quantity -> Double,
         origin -> Text,
+        reference_id -> Nullable<Integer>,
         created_at -> Nullable<Timestamp>,
         updated_at -> Nullable<Timestamp>,
     }

@@ -14,7 +14,7 @@ mod test {
     };
 
     fn pool() -> Arc<DbPool> {
-        Arc::new(super::infrastructure::db_pool("test.db"))
+        Arc::new(super::infrastructure::db_pool(":memory:"))
     }
 
     #[test]

@@ -3,7 +3,7 @@ CREATE TABLE
     stock (
         id integer not null primary key autoincrement,
         product_id int not null,
-        quantity numeric,
+        quantity numeric not null,
         created_at DateTime null default (DateTime (CURRENT_TIMESTAMP, 'localtime')),
         updated_at DateTime null,
         FOREIGN KEY (product_id) REFERENCES products (id)

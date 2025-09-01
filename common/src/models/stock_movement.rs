@@ -37,12 +37,21 @@ pub enum MoveType {
 }
 
 impl StockMovementBuilder {
-    pub fn new(movement: NewStockMovement) -> Self {
+    pub fn new(
+        product_id: i32,
+        move_type: MoveType,
+        quantity: f64,
+        origin: impl Into<String>,
+    ) -> Self {
         Self {
-            product_id: movement.product_id,
-            move_type: movement.move_type,
-            quantity: movement.quantity,
-            origin: movement.origin,
+            move_type: match move_type {
+                MoveType::StockInput => String::from("StockInput"),
+                MoveType::StockOutput => String::from("StockOutput"),
+                MoveType::StockTransfer => String::from("StockTransfer"),
+            },
+            origin: origin.into(),
+            quantity,
+            product_id,
         }
     }
 

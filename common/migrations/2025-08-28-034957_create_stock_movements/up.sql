@@ -6,9 +6,11 @@ CREATE TABLE
         move_type varchar(10) not null,
         quantity numeric not null,
         origin varchar(100) not null,
+        reference_id integer null,
         created_at DateTime null default (DateTime (CURRENT_TIMESTAMP, 'localtime')),
         updated_at DateTime null,
-        FOREIGN KEY (product_id) References products (id)
+        FOREIGN KEY (product_id) References products (id),
+        FOREIGN KEY (reference_id) References sale (id)
     );
 
 CREATE TRIGGER update_stockmovements_updated_at AFTER

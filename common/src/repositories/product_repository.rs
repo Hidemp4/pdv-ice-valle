@@ -27,8 +27,8 @@ impl DProductRepository {
 
 pub trait ProductRepository {
     fn all(&self) -> Result<Vec<(Product, Category)>, Error>;
-    fn save(&self, product: &NewProduct) -> Result<Product, Error>;
-    fn update(&self, product_id: i32, product: &Product) -> Result<Product, Error>;
+    fn save(&self, product: &NewProduct) -> Result<(Product, Category), Error>;
+    fn update(&self, product_id: i32, product: &Product) -> Result<(Product, Category), Error>;
     fn find_by_id(&self, product_id: i32) -> Result<(Product, Category), Error>;
     fn find_by_sku(&self, qsku: String) -> Result<(Product, Category), Error>;
 }
@@ -47,19 +47,22 @@ impl ProductRepository for DProductRepository {
         }
     }
 
-    fn save(&self, product: &NewProduct) -> Result<Product, Error> {
+    fn save(&self, product: &NewProduct) -> Result<(Product, Category), Error> {
         let mut conn = self.pool.get().unwrap();
         match diesel::insert_into(products::table)
             .values(product)
             .returning(Product::as_returning())
             .get_result(&mut conn)
         {
-            Ok(data) => Ok(data),
+            Ok(data) => {
+                let product = self.find_by_id(data.id)?;
+                Ok(product)
+            }
             Err(err) => Err(err),
         }
     }
 
-    fn update(&self, product_id: i32, product: &Product) -> Result<Product, Error> {
+    fn update(&self, product_id: i32, product: &Product) -> Result<(Product, Category), Error> {
         let mut conn = self.pool.get().unwrap();
 
         match diesel::update(products)
@@ -68,7 +71,10 @@ impl ProductRepository for DProductRepository {
             .returning(Product::as_returning())
             .get_result(&mut conn)
         {
-            Ok(data) => Ok(data),
+            Ok(data) => {
+                let product = self.find_by_id(data.id)?;
+                Ok(product)
+            }
             Err(err) => Err(err),
         }
     }

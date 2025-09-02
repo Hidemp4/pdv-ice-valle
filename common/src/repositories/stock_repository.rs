@@ -5,7 +5,8 @@ use crate::{
     infrastructure::DbPool,
     models::stock::{NewStock, Stock},
 };
-use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper, result::Error};
+use diesel::prelude::*;
+use diesel::result::Error;
 
 pub struct DStockRepository {
     pool: Arc<DbPool>,
@@ -21,6 +22,7 @@ pub trait StockRepository {
     fn all(&self) -> Result<Vec<Stock>, Error>;
     fn save(&self, nstock: &NewStock) -> Result<Stock, Error>;
     fn update(&self, ustock: &Stock) -> Result<Stock, Error>;
+    fn update_quantity(&self, qproduct_id: i32, new_quantity: f64) -> Result<Stock, Error>;
     fn find_by_id(&self, stock_id: i32) -> Result<Stock, Error>;
     fn find_by_product_id(&self, qproduct_id: i32) -> Result<Stock, Error>;
 }
@@ -54,6 +56,20 @@ impl StockRepository for DStockRepository {
         match diesel::update(stock)
             .filter(id.eq(ustock.id))
             .set(ustock)
+            .returning(Stock::as_returning())
+            .get_result(&mut conn)
+        {
+            Ok(data) => Ok(data),
+            Err(err) => Err(err),
+        }
+    }
+
+    fn update_quantity(&self, qproduct_id: i32, new_quantity: f64) -> Result<Stock, Error> {
+        let mut conn = self.pool.get().unwrap();
+
+        match diesel::update(stock)
+            .filter(id.eq(qproduct_id))
+            .set(quantity.eq(new_quantity))
             .returning(Stock::as_returning())
             .get_result(&mut conn)
         {

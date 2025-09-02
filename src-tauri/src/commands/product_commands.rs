@@ -23,8 +23,13 @@ pub async fn create_product(
         product.description.unwrap_or_default(),
         product.sku,
         product.price,
-    )
-    .category(product.category_id.unwrap_or_default());
+    );
+
+    let builder = if let Some(category_id) = product.category_id {
+        builder.category(category_id)
+    } else {
+        builder
+    };
 
     match service.create(builder) {
         Ok(res) => Ok(DataResponse::success(ProductResponse::from(res))),

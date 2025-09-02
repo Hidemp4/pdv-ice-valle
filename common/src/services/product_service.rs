@@ -24,12 +24,12 @@ impl ProductService {
         self.repository.all()
     }
 
-    pub fn create(&self, builder: ProductBuilder) -> Result<Product, Error> {
+    pub fn create(&self, builder: ProductBuilder) -> Result<(Product, Category), Error> {
         let product = &builder.build();
         self.repository.save(product)
     }
 
-    pub fn update(&self, product_id: i32, product: &Product) -> Result<Product, Error> {
+    pub fn update(&self, product_id: i32, product: &Product) -> Result<(Product, Category), Error> {
         self.repository.update(product_id, product)
     }
 

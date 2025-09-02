@@ -21,6 +21,7 @@ pub trait SaleRepository {
     fn all(&self) -> Result<Vec<Sale>, Error>;
     fn save(&self, sale: &NewSale) -> Result<Sale, Error>;
     fn update(&self, sale: &Sale) -> Result<Sale, Error>;
+    fn update_status(&self, sale_id: i32, new_status: String) -> Result<Sale, Error>;
     fn find_by_id(&self, sale_id: i32) -> Result<Sale, Error>;
 }
 
@@ -53,6 +54,20 @@ impl SaleRepository for DSaleRepository {
         match diesel::update(sales)
             .filter(id.eq(sale.id))
             .set(sale)
+            .returning(Sale::as_returning())
+            .get_result(&mut conn)
+        {
+            Ok(data) => Ok(data),
+            Err(err) => Err(err),
+        }
+    }
+
+    fn update_status(&self, sale_id: i32, new_status: String) -> Result<Sale, Error> {
+        let mut conn = self.pool.get().unwrap();
+
+        match diesel::update(sales)
+            .filter(id.eq(sale_id))
+            .set(status.eq(new_status))
             .returning(Sale::as_returning())
             .get_result(&mut conn)
         {

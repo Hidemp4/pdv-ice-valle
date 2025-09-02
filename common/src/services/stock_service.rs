@@ -50,6 +50,10 @@ impl StockService {
         self.repository.update(stock)
     }
 
+    pub fn update_quantity(&self, product_id: i32, new_quantity: f64) -> Result<Stock, Error> {
+        self.repository.update_quantity(product_id, new_quantity)
+    }
+
     pub fn get(&self, stock_id: i32) -> Result<Stock, Error> {
         self.repository.find_by_id(stock_id)
     }

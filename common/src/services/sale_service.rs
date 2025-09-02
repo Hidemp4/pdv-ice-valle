@@ -1,12 +1,12 @@
 use core::fmt;
-use std::{error, sync::Arc};
+use std::{collections::HashMap, error, sync::Arc};
 
 use diesel::result::Error;
 
 use crate::{
     infrastructure::DbPool,
     models::{
-        sale::{Sale, SaleBuilder},
+        sale::{Sale, SaleBuilder, SaleStatus},
         sale_items::{SaleItems, SaleItemsBuilder},
         stock_movement::{MoveType, StockMovementBuilder},
     },
@@ -35,7 +35,7 @@ pub enum SalesError {
 impl fmt::Display for SalesError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            SalesError::SaleError(msg) => write!(f, "Sale error: {}", msg),
+            SalesError::SaleError(msg) => write!(f, "Sale service error: {}", msg),
             SalesError::ProductLowStock(msg) => write!(f, "Low product stock: {}", msg),
             SalesError::SaleItemsError(msg) => write!(f, "Error on sale items {}", msg),
             SalesError::ProcessSaleError(errs) => {
@@ -50,6 +50,11 @@ impl fmt::Display for SalesError {
 }
 
 impl error::Error for SalesError {}
+impl From<Error> for SalesError {
+    fn from(value: Error) -> Self {
+        SalesError::SaleError(value.to_string())
+    }
+}
 
 impl SaleService {
     pub fn new(pool: Arc<DbPool>) -> Self {
@@ -77,8 +82,18 @@ impl SaleService {
     ) -> Result<Sale, SalesError> {
         let sale = &sale_builder.build();
         let mut errors: Vec<SalesError> = vec![];
-        let mut created_items: Vec<SaleItems> = vec![];
 
+        let mut grouped_items: HashMap<i32, SaleItems> = HashMap::new();
+        for item in saleitems {
+            grouped_items
+                .entry(item.product_id)
+                .and_modify(|e| {
+                    e.quantity += item.quantity;
+                })
+                .or_insert(item);
+        }
+
+        let saleitems: Vec<SaleItems> = grouped_items.into_values().collect();
         match self.repository.save(sale) {
             Ok(data) => {
                 for item in saleitems {
@@ -90,21 +105,14 @@ impl SaleService {
                         item.subtotal,
                     );
 
-                    match self.stock_service.get_by_product_id(item.product_id) {
-                        Ok(stock) => {
-                            if item.quantity > stock.quantity {
-                                errors.push(SalesError::ProductLowStock(format!(
-                                    "product: {}",
-                                    item.product_id
-                                )));
-                                break;
-                            }
-                        }
-                        Err(err) => errors.push(SalesError::SaleError(format!(
-                            "Cannot find product: {} \nError {err}",
+                    let stock = self.stock_service.get_by_product_id(item.product_id)?;
+                    if item.quantity > stock.quantity {
+                        errors.push(SalesError::ProductLowStock(format!(
+                            "product: {}",
                             item.product_id
-                        ))),
-                    };
+                        )));
+                        break;
+                    }
 
                     let movements_builder = StockMovementBuilder::new(
                         item.product_id,
@@ -114,25 +122,19 @@ impl SaleService {
                     )
                     .reference_id(data.id);
 
-                    match self.movement_service.create(movements_builder) {
-                        Ok(_) => {}
-                        Err(err) => errors.push(SalesError::SaleError(format!(
-                            "Failed to create a stock movement for sale \nError {err}"
-                        ))),
-                    };
+                    self.movement_service.create(movements_builder)?;
+                    let created_item = self.saleitem_service.create(items_builder)?;
 
-                    match self.saleitem_service.create(items_builder) {
-                        Ok(item) => created_items.push(item),
-                        Err(err) => errors.push(SalesError::SaleItemsError(format!(
-                            "Failed to create a sale item, error: {}",
-                            err.to_string()
-                        ))),
-                    };
+                    self.stock_service.update_quantity(
+                        created_item.product_id,
+                        stock.quantity - created_item.quantity,
+                    )?;
                 }
 
                 if !errors.is_empty() {
                     Err(SalesError::ProcessSaleError(errors))
                 } else {
+                    self.update_status(data.id, SaleStatus::SaleClosed)?;
                     Ok(data)
                 }
             }
@@ -145,6 +147,16 @@ impl SaleService {
 
     pub fn update(&self, sale: &Sale) -> Result<Sale, Error> {
         self.repository.update(sale)
+    }
+
+    pub fn update_status(&self, sale_id: i32, status: SaleStatus) -> Result<Sale, Error> {
+        let status = match status {
+            SaleStatus::SaleOpen => "SaleOpen",
+            SaleStatus::SaleClosed => "SaleClosed",
+            SaleStatus::SaleCanceled => "SaleCanceled",
+        };
+
+        self.repository.update_status(sale_id, String::from(status))
     }
 
     pub fn get(&self, sale_id: i32) -> Result<Sale, Error> {

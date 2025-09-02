@@ -33,11 +33,11 @@ mod test {
         let product = service.create(product).unwrap();
 
         assert_eq!(
-            product.name, "Biscoito traquinas",
+            product.0.name, "Biscoito traquinas",
             "O nome do produto é igual ao nome esperado."
         );
         assert_eq!(
-            product.sku, "BISC-20G-001",
+            product.0.sku, "BISC-20G-001",
             "A sku do produto é igual a sku esperada."
         );
     }

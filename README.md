@@ -19,15 +19,11 @@ Sistema PDV (Ponto de Venda) desenvolvido com [Tauri](https://tauri.app), utiliz
 
 ## 🔌 Dependências principais
 
-- @radix-ui/react-dialog
-- @radix-ui/react-separator
 - @radix-ui/react-slot
-- @radix-ui/react-tooltip
 - @tailwindcss/vite
 - @tauri-apps/api
 - @tauri-apps/cli
 - @tauri-apps/plugin-opener
-- @tauri-apps/plugin-sql
 - @types/node
 - @types/react
 - @types/react-dom
@@ -43,11 +39,11 @@ Sistema PDV (Ponto de Venda) desenvolvido com [Tauri](https://tauri.app), utiliz
 - typescript
 - vite
 
-### 1. Clone o repositório
-```
+```bash
 git clone https://github.com/seu-usuario/pdv.git
 cd pdv
 ```
+
 ### 2. Instale as dependências do Node.js
 ```
 npm install
@@ -69,23 +65,12 @@ sudo apt install -y \
   libwebkit2gtk-4.1-dev
 ```
 
-### 5. Instale o Tailwind
-```
-npm install tailwindcss @tailwindcss/vite
-```
-
-### 6. Instale o Shadcn
-```
-npm install -D @types/node
-npx shadcn@latest init
-```
-
-### 7. Execute o projeto em modo de desenvolvimento
+### 5. Execute o projeto em modo de desenvolvimento
 ```
 npm run tauri dev
 ```
 
-### 8. Para gerar um executável
+### 6. Para gerar um executável
 ```
 npm run tauri build
 ```

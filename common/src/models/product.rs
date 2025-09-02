@@ -1,15 +1,17 @@
-use chrono::Utc;
 use diesel::prelude::*;
+use crate::models::category::Category;
 
-#[derive(Insertable, Queryable, Selectable)]
+#[derive(Insertable, Queryable, QueryableByName, Selectable, AsChangeset, Associations)]
 #[diesel(table_name = crate::models::schema::products)]
+#[diesel(belongs_to(Category))]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Product {
     pub id: i32,
     pub name: String,
     pub description: Option<String>,
-    pub barcode: f64,
-    pub stock: i64,
+    pub category_id: Option<i32>,
+    pub price: f64,
+    pub sku: String,
     pub created_at: Option<chrono::NaiveDateTime>,
     pub updated_at: Option<chrono::NaiveDateTime>,
 }
@@ -19,39 +21,48 @@ pub struct Product {
 pub struct NewProduct {
     pub name: String,
     pub description: Option<String>,
-    pub barcode: f64,
-    pub stock: i64,
+    pub category_id: Option<i32>,
+    pub sku: String,
+    pub price: f64,
 }
 
+#[derive(Debug)]
 pub struct ProductBuilder {
     name: String,
     description: Option<String>,
-    barcode: f64,
-    stock: i64,
+    catagory_id: Option<i32>,
+    sku: String,
+    price: f64,
 }
 
 impl ProductBuilder {
-    pub fn new(name: String, barcode: f64, stock: i64) -> Self {
+    pub fn new(
+        name: impl Into<String>,
+        description: impl Into<String>,
+        sku: impl Into<String>,
+        price: f64,
+    ) -> Self {
         Self {
-            name,
-            description: None,
-            barcode,
-            stock,
+            name: name.into(),
+            description: Some(description.into()),
+            catagory_id: None,
+            sku: sku.into(),
+            price,
         }
     }
 
-    pub fn name(mut self, name: String) -> Self {
-        self.name = name;
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.name = name.into();
         self
     }
 
-    pub fn barcode(mut self, barcode: f64) -> Self {
-        self.barcode = barcode;
+    pub fn sku(mut self, sku: impl Into<String>) -> Self {
+        self.sku = sku.into();
         self
     }
 
-    pub fn stock(mut self, stock: i64) -> Self {
-        self.stock = stock;
+    pub fn price(mut self, price: f64) -> Self {
+        self.price = price;
         self
     }
 
@@ -60,12 +71,18 @@ impl ProductBuilder {
         self
     }
 
+    pub fn category(mut self, category_id: i32) -> Self {
+        self.catagory_id = Some(category_id);
+        self
+    }
+
     pub fn build(self) -> NewProduct {
         NewProduct {
             name: self.name,
             description: self.description,
-            barcode: self.barcode,
-            stock: self.stock,
+            category_id: self.catagory_id,
+            sku: self.sku,
+            price: self.price,
         }
     }
 }

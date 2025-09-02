@@ -29,7 +29,7 @@ pub enum SalesError {
     ProductLowStock(String),
     SaleItemsError(String),
     SaleError(String),
-    ProcessSaleError(Vec<String>),
+    ProcessSaleError(Vec<SalesError>),
 }
 
 impl fmt::Display for SalesError {
@@ -76,7 +76,7 @@ impl SaleService {
         saleitems: Vec<SaleItems>,
     ) -> Result<Sale, SalesError> {
         let sale = &sale_builder.build();
-        let mut errors: Vec<String> = vec![];
+        let mut errors: Vec<SalesError> = vec![];
         let mut created_items: Vec<SaleItems> = vec![];
 
         match self.repository.save(sale) {
@@ -93,11 +93,17 @@ impl SaleService {
                     match self.stock_service.get_by_product_id(item.product_id) {
                         Ok(stock) => {
                             if item.quantity > stock.quantity {
-                                errors.push(format!("The quantity of the selected product: {} is greater than the quantity available in stock", item.product_id));
+                                errors.push(SalesError::ProductLowStock(format!(
+                                    "product: {}",
+                                    item.product_id
+                                )));
                                 break;
                             }
                         }
-                        Err(err) => errors.push(err.to_string()),
+                        Err(err) => errors.push(SalesError::SaleError(format!(
+                            "Cannot find product: {} \nError {err}",
+                            item.product_id
+                        ))),
                     };
 
                     let movements_builder = StockMovementBuilder::new(
@@ -110,12 +116,17 @@ impl SaleService {
 
                     match self.movement_service.create(movements_builder) {
                         Ok(_) => {}
-                        Err(err) => errors.push(err.to_string()),
+                        Err(err) => errors.push(SalesError::SaleError(format!(
+                            "Failed to create a stock movement for sale \nError {err}"
+                        ))),
                     };
 
                     match self.saleitem_service.create(items_builder) {
                         Ok(item) => created_items.push(item),
-                        Err(err) => errors.push(err.to_string()),
+                        Err(err) => errors.push(SalesError::SaleItemsError(format!(
+                            "Failed to create a sale item, error: {}",
+                            err.to_string()
+                        ))),
                     };
                 }
 

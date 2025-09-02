@@ -53,4 +53,8 @@ impl StockService {
     pub fn get(&self, stock_id: i32) -> Result<Stock, Error> {
         self.repository.find_by_id(stock_id)
     }
+
+    pub fn get_by_product_id(&self, product_id: i32) -> Result<Stock, Error> {
+        self.repository.find_by_product_id(product_id)
+    }
 }

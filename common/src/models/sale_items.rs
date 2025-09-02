@@ -34,13 +34,19 @@ pub struct SaleItemsBuilder {
 }
 
 impl SaleItemsBuilder {
-    pub fn new(sale_item: NewSaleItems) -> Self {
+    pub fn new(
+        sale_id: i32,
+        product_id: i32,
+        quantity: f64,
+        unit_price: f64,
+        subtotal: f64,
+    ) -> Self {
         Self {
-            sale_id: sale_item.sale_id,
-            product_id: sale_item.product_id,
-            quantity: sale_item.quantity,
-            unit_price: sale_item.unit_price,
-            subtotal: sale_item.subtotal,
+            sale_id: sale_id,
+            product_id: product_id,
+            quantity: quantity,
+            unit_price: unit_price,
+            subtotal: subtotal,
         }
     }
 

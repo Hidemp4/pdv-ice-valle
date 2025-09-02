@@ -42,7 +42,7 @@ impl SaleBuilder {
             total_gross,
             total_net,
             payment_method,
-            status: Some(String::from("open")),
+            status: Some(String::from("SaleOpen")),
         }
     }
 
@@ -64,8 +64,8 @@ impl SaleBuilder {
     pub fn status(mut self, status: SaleStatus) -> Self {
         let status_match = match status {
             SaleStatus::SaleOpen => "SaleOpen",
-            SaleStatus::SaleClosed => "Closed",
-            SaleStatus::SaleCanceled => "Canceled",
+            SaleStatus::SaleClosed => "SaleClosed",
+            SaleStatus::SaleCanceled => "SaleCanceled",
         };
 
         self.status = Some(String::from(status_match));

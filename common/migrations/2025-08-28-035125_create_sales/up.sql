@@ -5,7 +5,7 @@ CREATE TABLE
         total_gross decimal(10, 2) not null,
         total_net decimal(10, 2) not null,
         payment_method VARCHAR(50) not null,
-        status varchar(10) not null default ('open'),
+        status varchar(10) not null default ('SaleOpen'),
         created_at DateTime null default (DateTime (CURRENT_TIMESTAMP, 'localtime')),
         updated_at DateTime null
     );

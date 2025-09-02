@@ -10,7 +10,7 @@ CREATE TABLE
         created_at DateTime null default (DateTime (CURRENT_TIMESTAMP, 'localtime')),
         updated_at DateTime null,
         FOREIGN KEY (product_id) References products (id),
-        FOREIGN KEY (reference_id) References sale (id)
+        FOREIGN KEY (reference_id) References sales (id)
     );
 
 CREATE TRIGGER update_stockmovements_updated_at AFTER

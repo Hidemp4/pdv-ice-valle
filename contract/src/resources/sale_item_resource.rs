@@ -2,7 +2,7 @@ use chrono::NaiveDateTime;
 use pdcommon::models::sale_items::SaleItems;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Debug)]
+#[derive(Deserialize, Debug)]
 pub struct SaleItemRequest {
     pub id: Option<i32>,
     pub sale_id: i32,
@@ -14,7 +14,7 @@ pub struct SaleItemRequest {
     pub updated_at: Option<NaiveDateTime>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Debug)]
 pub struct SaleItemResponse {
     pub id: i32,
     pub sale_id: i32,

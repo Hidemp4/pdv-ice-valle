@@ -22,6 +22,7 @@ pub trait StockRepository {
     fn save(&self, nstock: &NewStock) -> Result<Stock, Error>;
     fn update(&self, ustock: &Stock) -> Result<Stock, Error>;
     fn find_by_id(&self, stock_id: i32) -> Result<Stock, Error>;
+    fn find_by_product_id(&self, qproduct_id: i32) -> Result<Stock, Error>;
 }
 
 impl StockRepository for DStockRepository {
@@ -66,6 +67,19 @@ impl StockRepository for DStockRepository {
 
         match stock
             .filter(id.eq(stock_id))
+            .select(Stock::as_select())
+            .get_result(&mut conn)
+        {
+            Ok(data) => Ok(data),
+            Err(err) => Err(err),
+        }
+    }
+
+    fn find_by_product_id(&self, qproduct_id: i32) -> Result<Stock, Error> {
+        let mut conn = self.pool.get().unwrap();
+
+        match stock
+            .filter(product_id.eq(qproduct_id))
             .select(Stock::as_select())
             .get_result(&mut conn)
         {

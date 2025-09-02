@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "pdv",
+  "productName": "icevalekav",
   "version": "0.1.0",
-  "identifier": "com.pdv.app",
+  "identifier": "IceValleKav",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -12,12 +12,8 @@
   "app": {
     "windows": [
       {
-        "title": "pdv",
-        "width": 1920,
-        "height": 1080,
-        "minWidth": 1280,
-        "minHeight": 1024,
-        "resizable": true
+        "title": "IceValle KaV",
+        "fullscreen": true
       }
     ],
     "security": {

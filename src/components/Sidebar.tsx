@@ -5,7 +5,7 @@ interface SideBarProps {
 const Sidebar: React.FC<SideBarProps> = ({ className }) => {
   return (
     <aside className={`sidebar pt-4 pb-4 ${className ?? ""}`}>
-      <nav className="flex flex-col items-center justify-between h-full w-full">
+      <nav className="flex flex-col items-center justify-between h-full w-full border-r border-t border-b rounded-r-lg p-4">
         <ul className="h-full flex flex-col gap-4">
           <li>
             <a href="/">

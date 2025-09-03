@@ -1,4 +1,4 @@
-import React from "react";
+import React, { JSX } from "react";
 
 interface CardValueSalesProps {
   salesDay?: number;
@@ -8,6 +8,7 @@ interface CardValueSalesProps {
 interface Sale {
   label: string;
   value: number | string;
+  desc: string;
   icon: JSX.Element;
 }
 
@@ -22,6 +23,7 @@ const CardValueSales: React.FC<CardValueSalesProps> = ({
     {
       label: "Entrada do Dia",
       value: salesDayValue,
+      desc: "Total recebido durante o turno",
       icon: (
         <svg
           width="28"
@@ -45,8 +47,9 @@ const CardValueSales: React.FC<CardValueSalesProps> = ({
       ),
     },
     {
-      label: "Entrada do Mês",
+      label: "Total Mês",
       value: salesMonthValue,
+      desc: "Total recebido durante o mês",
       icon: (
         <svg
           width="28"
@@ -72,13 +75,12 @@ const CardValueSales: React.FC<CardValueSalesProps> = ({
       {sales.map((sale) => (
         <div
           key={sale.label}
-          className="w-60 h-24 bg-neutral-100 rounded-md flex p-4 gap-3"
+          className="w-auto h-auto bg-neutral-100 rounded-md flex p-4 gap-3"
         >
-          {sale.icon}
-
-          <div className="space-y-1">
-            <p className="text-zinc-400 font-semibold">{sale.label}</p>
-            <h2 className="font-bold text-xl">R${sale.value}</h2>
+          <div className="space-y-2">
+            <p className="text-[#646362] text-sm font-medium">{sale.label}</p>
+            <h2 className="text-3xl font-medium">R$1.623,32</h2>
+            <p className="text-[#646362] text-sm">{sale.desc}</p>
           </div>
         </div>
       ))}

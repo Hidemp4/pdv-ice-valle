@@ -10,7 +10,14 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { CardItem } from "@/layouts/MainLayout";
+// import { CardItem } from "@/layouts/MainLayout";
+
+type CardItem = {
+  name_prod: string;
+  quantity: number;
+  unit_price: number;
+  subtotal: number
+}
 
 interface TableProductsProps {
   products: CardItem[];

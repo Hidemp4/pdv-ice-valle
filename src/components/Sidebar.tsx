@@ -26,7 +26,7 @@ const Sidebar: React.FC<SideBarProps> = ({ className }) => {
           </li>
 
           <li>
-            <a href="/reports">
+            <a href="/sales">
               <svg
                 width="32"
                 height="32"

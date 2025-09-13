@@ -42,6 +42,10 @@ type mockSale = {
   paymentMethod: string;
 };
 
+interface TableSalesProps {
+  sales: mockSale[];
+}
+
 // Função helper para criar headers com ordenação
 const createSortableHeader = (label: string) => {
   return ({ column }: { column: Column<mockSale, unknown> }) => {
@@ -121,138 +125,10 @@ export const columns: ColumnDef<mockSale>[] = [
   },
 ];
 
-export const mockSales: mockSale[] = [
-  {
-    id: 1,
-    products: ["Coca-Cola 2L", "Hamburguer Artesanal"],
-    date: "02/09 21:56:04",
-    total: "R$12,00",
-    paymentMethod: "Pix",
-  },
-  {
-    id: 2,
-    products: ["Pizza Calabresa"],
-    date: "02/09 20:30:10",
-    total: "R$45,00",
-    paymentMethod: "Cartão de Crédito",
-  },
-  {
-    id: 3,
-    products: ["Hambúrguer Artesanal"],
-    date: "03/09 12:15:30",
-    total: "R$28,50",
-    paymentMethod: "Dinheiro",
-  },
-  {
-    id: 4,
-    products: ["Açaí 500ml"],
-    date: "03/09 14:45:22",
-    total: "R$18,00",
-    paymentMethod: "Pix",
-  },
-  {
-    id: 5,
-    products: ["Coca-Cola 2L"],
-    date: "02/09 21:56:04",
-    total: "R$12,00",
-    paymentMethod: "Pix",
-  },
-  {
-    id: 6,
-    products: ["Pizza Calabresa"],
-    date: "02/09 20:30:10",
-    total: "R$45,00",
-    paymentMethod: "Cartão de Crédito",
-  },
-  {
-    id: 7,
-    products: ["Hambúrguer Artesanal"],
-    date: "03/09 12:15:30",
-    total: "R$28,50",
-    paymentMethod: "Dinheiro",
-  },
-  {
-    id: 8,
-    products: ["Açaí 500ml"],
-    date: "03/09 14:45:22",
-    total: "R$18,00",
-    paymentMethod: "Pix",
-  },
-  {
-    id: 9,
-    products: ["Coca-Cola 2L"],
-    date: "02/09 21:56:04",
-    total: "R$12,00",
-    paymentMethod: "Pix",
-  },
-  {
-    id: 10,
-    products: ["Pizza Calabresa"],
-    date: "02/09 20:30:10",
-    total: "R$45,00",
-    paymentMethod: "Cartão de Crédito",
-  },
-  {
-    id: 11,
-    products: ["Hambúrguer Artesanal"],
-    date: "03/09 12:15:30",
-    total: "R$28,50",
-    paymentMethod: "Dinheiro",
-  },
-  {
-    id: 12,
-    products: ["Açaí 500ml"],
-    date: "03/09 14:45:22",
-    total: "R$18,00",
-    paymentMethod: "Pix",
-  },
-  {
-    id: 13,
-    products: ["Pizza Calabresa"],
-    date: "02/09 20:30:10",
-    total: "R$45,00",
-    paymentMethod: "Cartão de Crédito",
-  },
-  {
-    id: 14,
-    products: ["Hambúrguer Artesanal"],
-    date: "03/09 12:15:30",
-    total: "R$28,50",
-    paymentMethod: "Dinheiro",
-  },
-  {
-    id: 15,
-    products: ["Açaí 500ml"],
-    date: "03/09 14:45:22",
-    total: "R$18,00",
-    paymentMethod: "Pix",
-  },
-  {
-    id: 16,
-    products: ["Pizza Calabresa"],
-    date: "02/09 20:30:10",
-    total: "R$45,00",
-    paymentMethod: "Cartão de Crédito",
-  },
-  {
-    id: 17,
-    products: ["Hambúrguer Artesanal"],
-    date: "03/09 12:15:30",
-    total: "R$28,50",
-    paymentMethod: "Dinheiro",
-  },
-  {
-    id: 18,
-    products: ["Açaí 500ml"],
-    date: "03/09 14:45:22",
-    total: "R$18,00",
-    paymentMethod: "Pix",
-  },
+const TableSales: React.FC<TableSalesProps> = ({ sales }) => {
 
-];
+  const saleData = sales; // Usando os dados passados via props
 
-
-const TableSales: React.FC = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -262,7 +138,7 @@ const TableSales: React.FC = () => {
   });
 
   const table = useReactTable({
-    data: mockSales,
+    data: saleData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -280,6 +156,9 @@ const TableSales: React.FC = () => {
       pagination
     },
   });
+
+  console.log("Tabela:", saleData); // Log do estado da tabela para depuração
+
   // Função para exportar PDF (placeholder)
   const handleExportToPDF = () => {
     console.log("Exportar para PDF");

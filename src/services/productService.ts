@@ -1,8 +1,10 @@
-import { DataResponse, ProductResponse, ProductRequest } from "@/types/product";
+import { ProductResponse, ProductRequest } from "@/types/product";
 import { ProductUtils } from "@/utils/productUtils";
+import { ProductCommands } from "@/types/tauri";
 
 /**
  * Serviço para interagir com a API de produtos do Tauri
+ * Todas as chamadas são tipadas e type-safe
  */
 export class ProductService {
   /**
@@ -10,7 +12,7 @@ export class ProductService {
    */
   static async getAllProducts(): Promise<ProductResponse[]> {
     try {
-      const result = await (window as any).__TAURI_INTERNALS__.invoke('get_all_products') as DataResponse<ProductResponse[]>;
+      const result = await ProductCommands.getAllProducts.invoke();
       
       if (result.success && result.data) {
         return result.data;
@@ -28,7 +30,7 @@ export class ProductService {
    */
   static async getProductById(id: number): Promise<ProductResponse> {
     try {
-      const result = await (window as any).__TAURI_INTERNALS__.invoke('get_product_by_id', { id }) as DataResponse<ProductResponse>;
+      const result = await ProductCommands.getProductById.invoke({ id });
       
       if (result.success && result.data) {
         return result.data;
@@ -46,7 +48,7 @@ export class ProductService {
    */
   static async getProductBySku(sku: string): Promise<ProductResponse> {
     try {
-      const result = await (window as any).__TAURI_INTERNALS__.invoke('get_product_by_sku', { sku }) as DataResponse<ProductResponse>;
+      const result = await ProductCommands.getProductBySku.invoke({ sku });
       
       if (result.success && result.data) {
         return result.data;
@@ -70,7 +72,7 @@ export class ProductService {
         updated_at: null,
       });
 
-      const result = await (window as any).__TAURI_INTERNALS__.invoke('create_product', { product: request }) as DataResponse<ProductResponse>;
+      const result = await ProductCommands.createProduct.invoke({ product: request });
       
       if (result.success && result.data) {
         return result.data;
@@ -94,7 +96,7 @@ export class ProductService {
         updated_at: new Date().toISOString(),
       });
 
-      const result = await (window as any).__TAURI_INTERNALS__.invoke('update_product', { product: request }) as DataResponse<ProductResponse>;
+      const result = await ProductCommands.updateProduct.invoke({ product: request });
       
       if (result.success && result.data) {
         return result.data;
@@ -112,7 +114,7 @@ export class ProductService {
    */
   static async deleteProduct(id: number): Promise<boolean> {
     try {
-      const result = await (window as any).__TAURI_INTERNALS__.invoke('delete_product', { id }) as DataResponse<boolean>;
+      const result = await ProductCommands.deleteProduct.invoke({ id });
       
       if (result.success) {
         return true;
@@ -130,7 +132,7 @@ export class ProductService {
    */
   static async getProductsByCategory(categoryId: number): Promise<ProductResponse[]> {
     try {
-      const result = await (window as any).__TAURI_INTERNALS__.invoke('get_products_by_category', { categoryId }) as DataResponse<ProductResponse[]>;
+      const result = await ProductCommands.getProductsByCategory.invoke({ categoryId });
       
       if (result.success && result.data) {
         return result.data;
@@ -148,7 +150,7 @@ export class ProductService {
    */
   static async searchProducts(query: string): Promise<ProductResponse[]> {
     try {
-      const result = await (window as any).__TAURI_INTERNALS__.invoke('search_products', { query }) as DataResponse<ProductResponse[]>;
+      const result = await ProductCommands.searchProducts.invoke({ query });
       
       if (result.success && result.data) {
         return result.data;
@@ -159,5 +161,52 @@ export class ProductService {
       console.error('Erro ao buscar produtos:', error);
       throw error;
     }
+  }
+
+  /**
+   * Validações antes de criar/atualizar
+   */
+  static validateProductData(data: Partial<ProductRequest>): string[] {
+    const errors: string[] = [];
+
+    if (!data.name || data.name.trim().length === 0) {
+      errors.push('Nome do produto é obrigatório');
+    }
+
+    if (!data.sku || data.sku.trim().length === 0) {
+      errors.push('SKU é obrigatório');
+    }
+
+    if (data.price === undefined || data.price <= 0) {
+      errors.push('Preço deve ser maior que zero');
+    }
+
+    return errors;
+  }
+
+  /**
+   * Criar produto com validação
+   */
+  static async createProductWithValidation(productData: Omit<ProductRequest, 'id' | 'created_at' | 'updated_at'>): Promise<ProductResponse> {
+    const errors = this.validateProductData(productData);
+    
+    if (errors.length > 0) {
+      throw new Error(`Dados inválidos: ${errors.join(', ')}`);
+    }
+
+    return this.createProduct(productData);
+  }
+
+  /**
+   * Atualizar produto com validação
+   */
+  static async updateProductWithValidation(id: number, productData: Partial<ProductRequest>): Promise<ProductResponse> {
+    const errors = this.validateProductData(productData);
+    
+    if (errors.length > 0) {
+      throw new Error(`Dados inválidos: ${errors.join(', ')}`);
+    }
+
+    return this.updateProduct(id, productData);
   }
 }

@@ -1,4 +1,3 @@
-
 import HeaderSales from "@/components/HeaderSales";
 import TableSales from "@/components/TableSales";
 
@@ -12,7 +11,6 @@ type mockSale = {
 };
 
 const Sales: React.FC = () => {
-  // Aqui você importaria ou passaria os dados reais das vendas
   // Por enquanto, usando dados mockados como exemplo
   const mockSalesData: mockSale[] = [
     {

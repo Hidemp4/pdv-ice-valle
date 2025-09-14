@@ -3,7 +3,7 @@ use diesel::r2d2::{self, ConnectionManager};
 use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 
 pub const MIGRATIONS: EmbeddedMigrations =
-    embed_migrations!("C:\\Users\\augus\\Projects\\pdv-ice-valle\\common\\migrations");
+    embed_migrations!("/home/hidemp4/ws/ws-tauri/pdv-ice-valle/common/migrations");
 pub type DbPool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 pub fn db_pool(url: &str) -> DbPool {

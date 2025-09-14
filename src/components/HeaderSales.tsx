@@ -1,6 +1,5 @@
 import CardValueSales from "./ui/cardValueSales";
 
-
 // Tipos
 type mockSale = {
   id: number;
@@ -11,7 +10,7 @@ type mockSale = {
 };
 
 interface HeaderSalesProps {
-  salesData: mockSale[]; // Corrigido: era mockSalesData
+  salesData: mockSale[];
 }
 
 // Componente HeaderSales

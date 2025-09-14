@@ -1,5 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
-import { Produto, NovoProduto } from '../types/produto';
+import { Produto, NovoProduto } from '../types/product';
 
 export const useDatabase = () => {
   const buscarProdutoPorSku = async (sku: string): Promise<Produto | null> => {

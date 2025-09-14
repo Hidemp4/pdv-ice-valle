@@ -30,7 +30,7 @@ export class ProductService {
    */
   static async getProductById(id: number): Promise<ProductResponse> {
     try {
-      const result = await ProductCommands.getProductById.invoke({ id });
+      const result = await ProductCommands.getProductById.invoke({ product_id: id });
       
       if (result.success && result.data) {
         return result.data;
@@ -96,7 +96,7 @@ export class ProductService {
         updated_at: new Date().toISOString(),
       });
 
-      const result = await ProductCommands.updateProduct.invoke({ product: request });
+      const result = await ProductCommands.updateProduct.invoke({ product_id: id, data: request });
       
       if (result.success && result.data) {
         return result.data;
@@ -132,7 +132,7 @@ export class ProductService {
    */
   static async getProductsByCategory(categoryId: number): Promise<ProductResponse[]> {
     try {
-      const result = await ProductCommands.getProductsByCategory.invoke({ categoryId });
+      const result = await ProductCommands.getProductsByCategory.invoke({ category_id: categoryId });
       
       if (result.success && result.data) {
         return result.data;

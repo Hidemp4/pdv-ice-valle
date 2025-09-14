@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   Table,
@@ -11,18 +10,10 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-
-interface CardItem {
-  id: number;
-  name_prod: string;
-  unit_price: number;
-  sku: string;
-  quantity: number;
-  subtotal: number;
-}
+import { CartItem } from "@/types/product";
 
 interface TableProductsProps {
-  products: CardItem[];
+  products: CartItem[];
   onRemoveProduct?: (index: number) => void;
 }
 
@@ -53,8 +44,8 @@ const TableProducts: React.FC<TableProductsProps> = ({ products, onRemoveProduct
               </TableCell>
             </TableRow>
           ) : (
-            products.map((p, index) => (
-              <TableRow key={`${p.sku}-${index}`}>
+            products.map((product, index) => (
+              <TableRow key={`${product.sku}-${index}`}>
                 <TableCell>
                   <Button
                     variant="ghost"
@@ -68,18 +59,21 @@ const TableProducts: React.FC<TableProductsProps> = ({ products, onRemoveProduct
                 </TableCell>
                 <TableCell>
                   <div>
-                    <div className="font-medium">{p.name_prod}</div>
-                    <div className="text-sm text-gray-500">SKU: {p.sku}</div> 
+                    <div className="font-medium">{product.name}</div>
+                    <div className="text-sm text-gray-500">SKU: {product.sku}</div>
+                    {product.description && (
+                      <div className="text-xs text-gray-400 mt-1">{product.description}</div>
+                    )}
                   </div>
                 </TableCell>
                 <TableCell className="text-center">
-                  <span className="font-medium">{p.quantity}</span>
+                  <span className="font-medium">{product.quantity}</span>
                 </TableCell>
                 <TableCell className="text-right">
-                  R$ {p.unit_price.toFixed(2)} 
+                  R$ {product.price.toFixed(2)} 
                 </TableCell>
                 <TableCell className="text-right font-medium">
-                  R$ {p.subtotal.toFixed(2)}
+                  R$ {product.subtotal.toFixed(2)}
                 </TableCell>
               </TableRow>
             ))

@@ -2,12 +2,8 @@ import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import PaymentArea from "@/components/PaymentArea";
 import TableProducts from "@/components/TableProducts";
-import { DataResponse, Product, ProductResponse } from "@/types/product";
-
-export interface CardItem extends Product {
-  quantity: number;
-  subtotal: number;
-}
+import { ProductResponse, CartItem } from "@/types/product";
+import { ProductService } from "@/services/productService";
 
 interface HomeProps {
   className?: string;
@@ -16,33 +12,20 @@ interface HomeProps {
 const Home: React.FC<HomeProps> = ({ className }) => {
 
   // ESTADOS
-  const [cart, setCart] = useState<CardItem[]>([]); // Produtos adicionados via Header
-  const [availableProducts, setAvailableProducts] = useState<Product[]>([]); // Produtos do banco
+  const [cart, setCart] = useState<CartItem[]>([]); // Produtos adicionados via Header
+  const [availableProducts, setAvailableProducts] = useState<ProductResponse[]>([]); // Produtos do banco
   const [loading, setLoading] = useState(false);
 
   // FUNÇÃO PARA BUSCAR PRODUTOS DO BANCO
   const loadProductsFromDatabase = async () => {
     setLoading(true);
     try {
-      const result = await (window as any).__TAURI_INTERNALS__.invoke('get_all_products') as DataResponse<ProductResponse[]>;
-      
-      if (result.success && result.data) {
-        const convertedProducts: Product[] = result.data.map(dbProduct => ({
-          id: dbProduct.id,
-          name_prod: dbProduct.name,
-          unit_price: dbProduct.price,
-          sku: dbProduct.sku
-        }));
-        
-        setAvailableProducts(convertedProducts);
-        console.log(`${convertedProducts.length} produtos carregados do banco`);
-      } else {
-        console.error('Erro ao carregar produtos:', result.error);
-        alert('Erro ao carregar produtos do banco de dados');
-      }
+      const products = await ProductService.getAllProducts();
+      setAvailableProducts(products);
+      console.log(`${products.length} produtos carregados do banco`);
     } catch (error) {
-      console.error('Erro ao buscar produtos:', error);
-      alert('Erro de conexão com o banco de dados');
+      console.error('Erro ao carregar produtos:', error);
+      alert(`Erro ao carregar produtos: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
     } finally {
       setLoading(false);
     }
@@ -50,8 +33,8 @@ const Home: React.FC<HomeProps> = ({ className }) => {
 
   // FUNÇÃO PARA ADICIONAR PRODUTO AO CARRINHO
   const handleAddProduct = (sku: string, qtd: number) => {
-    const found = availableProducts.find((p) => p.sku === sku);
-    if (found) {
+    const foundProduct = availableProducts.find((p) => p.sku === sku);
+    if (foundProduct) {
       // Verificar se já existe no carrinho
       const existingItemIndex = cart.findIndex(item => item.sku === sku);
       
@@ -59,19 +42,19 @@ const Home: React.FC<HomeProps> = ({ className }) => {
         // Se já existe, somar a quantidade
         const updatedCart = [...cart];
         updatedCart[existingItemIndex].quantity += qtd;
-        updatedCart[existingItemIndex].subtotal = updatedCart[existingItemIndex].unit_price * updatedCart[existingItemIndex].quantity;
+        updatedCart[existingItemIndex].subtotal = updatedCart[existingItemIndex].price * updatedCart[existingItemIndex].quantity;
         setCart(updatedCart);
       } else {
         // Se não existe, adicionar novo item
-        const newItem: CardItem = {
-          ...found,
+        const newCartItem: CartItem = {
+          ...foundProduct,
           quantity: qtd,
-          subtotal: found.unit_price * qtd,
+          subtotal: foundProduct.price * qtd,
         };
-        setCart((prev) => [...prev, newItem]);
+        setCart((prev) => [...prev, newCartItem]);
       }
       
-      console.log(`Produto adicionado: ${found.name_prod} (${qtd}x)`);
+      console.log(`Produto adicionado: ${foundProduct.name} (${qtd}x)`);
     } else {
       alert(`Produto com SKU "${sku}" não encontrado no banco de dados`);
       console.log('SKUs disponíveis:', availableProducts.map(p => p.sku).join(', '));
@@ -82,10 +65,10 @@ const Home: React.FC<HomeProps> = ({ className }) => {
   const handleRemoveProduct = (index: number) => {
     const removedItem = cart[index];
     setCart(prev => prev.filter((_, i) => i !== index));
-    console.log(`Produto removido: ${removedItem.name_prod}`);
+    console.log(`Produto removido: ${removedItem.name}`);
   };
 
-  // SOMA TOTAL DA COMPRA (mesma lógica)
+  // SOMA TOTAL DA COMPRA
   const total = cart.reduce((acc, item) => acc + item.subtotal, 0);
 
   // CARREGAR PRODUTOS AO INICIAR
@@ -110,7 +93,7 @@ const Home: React.FC<HomeProps> = ({ className }) => {
             {/* TableProducts mostra apenas os itens adicionados via Header */}
             <TableProducts 
               products={cart}
-              onRemoveProduct={handleRemoveProduct} // Função para remover do carrinho
+              onRemoveProduct={handleRemoveProduct}
             />
             
             {/* Info de debug (apenas em desenvolvimento) */}
@@ -121,6 +104,8 @@ const Home: React.FC<HomeProps> = ({ className }) => {
                     <strong>Produtos no banco:</strong> {availableProducts.length}
                     <br />
                     <strong>Itens no carrinho:</strong> {cart.length}
+                    <br />
+                    <strong>Total:</strong> R$ {total.toFixed(2)}
                   </div>
                   <div>
                     <button 
@@ -141,13 +126,16 @@ const Home: React.FC<HomeProps> = ({ className }) => {
                 </div>
                 {availableProducts.length > 0 && (
                   <details className="mt-2">
-                    <summary className="cursor-pointer">SKUs disponíveis</summary>
+                    <summary className="cursor-pointer">Produtos disponíveis</summary>
                     <div className="mt-1 text-xs bg-white p-2 rounded max-h-20 overflow-y-auto">
                       {availableProducts.map(p => (
-                        <div key={p.id} className="flex justify-between">
-                          <span>{p.sku}</span>
-                          <span>{p.name_prod}</span>
-                          <span>R$ {p.unit_price.toFixed(2)}</span>
+                        <div key={p.id} className="flex justify-between gap-2 py-1 border-b border-gray-100 last:border-0">
+                          <span className="font-mono">{p.sku}</span>
+                          <span className="flex-1 truncate">{p.name}</span>
+                          <span className="font-medium">R$ {p.price.toFixed(2)}</span>
+                          {p.category && (
+                            <span className="text-blue-600 text-xs">({p.category.name})</span>
+                          )}
                         </div>
                       ))}
                     </div>

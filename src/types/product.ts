@@ -9,23 +9,27 @@ export interface CategoryResponse {
 export interface ProductResponse {
   id: number;
   name: string;
-  description: string | null;
+  description?: string;
   price: number;
   sku: string;
-  created_at: string | null;
-  updated_at: string | null;
-  category: CategoryResponse | null;
+  created_at?: string;
+  updated_at?: string;
+  category?: CategoryResponse;
 }
 
+/**
+ * Tipo para criar/atualizar produtos
+ * Espelha o ProductRequest do Rust
+ */
 export interface ProductRequest {
   id?: number;
   name: string;
-  description: string | null;
-  category_id: number | null;
+  description?: string;
+  category_id?: number | null;
   price: number;
   sku: string;
-  created_at: string | null;
-  updated_at: string | null;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface DataResponse<T> {

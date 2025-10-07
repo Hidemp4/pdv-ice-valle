@@ -1,22 +1,7 @@
 import CardValueSales from "./ui/cardValueSales";
 
-// Tipos
-type mockSale = {
-  id: number;
-  products: string[];
-  date: string;
-  total: string;
-  paymentMethod: string;
-};
-
-interface HeaderSalesProps {
-  salesData: mockSale[];
-}
-
 // Componente HeaderSales
-const HeaderSales: React.FC<HeaderSalesProps> = ({ salesData }) => {
-
-  const sales = salesData; // Usando os dados passados via props
+const HeaderSales: React.FC = () => {
 
   return (
     <>
@@ -36,7 +21,7 @@ const HeaderSales: React.FC<HeaderSalesProps> = ({ salesData }) => {
           </p>
         </div>
       </div>
-      <CardValueSales salesData={sales} />
+      <CardValueSales />
     </>
   );
 };

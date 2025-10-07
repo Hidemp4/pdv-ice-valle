@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import PaymentArea from "@/components/PaymentArea";
 import TableProducts from "@/components/TableProducts";
 import { ProductUtils } from "@/utils/productUtils";
-import { useHomePage } from "@/hooks/useProducts";
+import { useProducts } from "@/hooks/useProducts";   
 
 interface HomeProps {
   className?: string;
@@ -25,7 +25,7 @@ const Home: React.FC<HomeProps> = ({ className }) => {
     total,
     itemCount,
     totalQuantity,
-  } = useHomePage();
+  } = useProducts();
 
   // FUNÇÃO PARA ADICIONAR PRODUTO AO CARRINHO (através do hook)
   const handleAddProduct = (sku: string, qtd: number) => {

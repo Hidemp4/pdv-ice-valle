@@ -25,12 +25,6 @@ pub async fn create_product(
         product.price,
     );
 
-    let builder = if let Some(category_id) = product.category_id {
-        builder.category(category_id)
-    } else {
-        builder
-    };
-
     match service.create(builder) {
         Ok(res) => Ok(DataResponse::success(ProductResponse::from(res))),
         Err(err) => Err(DataResponse::error(err.to_string())),

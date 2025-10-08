@@ -20,13 +20,22 @@ impl ProductService {
         Self { repository }
     }
 
-    pub fn all(&self) -> Result<Vec<(Product, Category)>, Error> {
+    pub fn all(&self) -> Result<Vec<(Product, Option<Category>)>, Error> {
         self.repository.all()
     }
 
-    pub fn create(&self, builder: ProductBuilder) -> Result<(Product, Category), Error> {
-        let product = &builder.build();
-        self.repository.save(product)
+    pub fn create(&self, builder: ProductBuilder) -> Result<(Product, Option<Category>), Error> {
+        let category = builder.get_category();
+
+        if let Some(_) = category {
+            println!("Builder with category: {:?}", builder);
+            let product = &builder.build_category();
+            self.repository.save_with_category(product)
+        } else {
+            println!("Builder without category: {:?}", builder);
+            let product = &builder.build();
+            self.repository.save(product)
+        }
     }
 
     pub fn update(&self, product_id: i32, product: &Product) -> Result<(Product, Category), Error> {

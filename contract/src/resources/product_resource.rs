@@ -74,12 +74,31 @@ impl From<(Product, Category)> for ProductResponse {
     }
 }
 
+impl From<(Product, Option<Category>)> for ProductResponse {
+    fn from((product, category): (Product, Option<Category>)) -> Self {
+        Self {
+            id: product.id,
+            name: product.name,
+            description: product.description,
+            price: product.price,
+            sku: product.sku,
+            created_at: product.created_at,
+            updated_at: product.updated_at,
+            category: if let Some(category) = category {
+                Some(CategoryResponse::from(category))
+            } else {
+                None
+            },
+        }
+    }
+}
+
 impl ProductResponse {
     pub fn collection(products: Vec<Product>) -> Vec<Self> {
         products.into_iter().map(ProductResponse::from).collect()
     }
 
-    pub fn collection_with_category(products: Vec<(Product, Category)>) -> Vec<Self> {
+    pub fn collection_with_category(products: Vec<(Product, Option<Category>)>) -> Vec<Self> {
         products.into_iter().map(ProductResponse::from).collect()
     }
 }

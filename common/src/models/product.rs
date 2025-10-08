@@ -1,5 +1,5 @@
-use diesel::prelude::*;
 use crate::models::category::Category;
+use diesel::prelude::*;
 
 #[derive(Insertable, Queryable, QueryableByName, Selectable, AsChangeset, Associations)]
 #[diesel(table_name = crate::models::schema::products)]
@@ -19,6 +19,15 @@ pub struct Product {
 #[derive(Insertable)]
 #[diesel(table_name = crate::models::schema::products)]
 pub struct NewProduct {
+    pub name: String,
+    pub description: Option<String>,
+    pub sku: String,
+    pub price: f64,
+}
+
+#[derive(Insertable)]
+#[diesel(table_name = crate::models::schema::products)]
+pub struct NewProductWithCategory {
     pub name: String,
     pub description: Option<String>,
     pub category_id: Option<i32>,
@@ -71,16 +80,29 @@ impl ProductBuilder {
         self
     }
 
-    pub fn category(mut self, category_id: i32) -> Self {
-        self.catagory_id = Some(category_id);
+    pub fn category(mut self, category_id: Option<i32>) -> Self {
+        self.catagory_id = category_id;
         self
+    }
+
+    pub fn get_category(&self) -> Option<i32> {
+        self.catagory_id
+    }
+
+    pub fn build_category(self) -> NewProductWithCategory {
+        NewProductWithCategory {
+            name: self.name,
+            description: self.description,
+            category_id: self.catagory_id,
+            sku: self.sku,
+            price: self.price,
+        }
     }
 
     pub fn build(self) -> NewProduct {
         NewProduct {
             name: self.name,
             description: self.description,
-            category_id: self.catagory_id,
             sku: self.sku,
             price: self.price,
         }

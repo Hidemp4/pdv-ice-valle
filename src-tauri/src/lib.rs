@@ -15,8 +15,14 @@ pub fn run() {
             let mut data_dir = data_dir.into_os_string().into_string().unwrap();
             data_dir.push_str("/dev.db");
 
-            let pool = Arc::new(db_pool(&data_dir));
-            app.manage(pool);
+            match db_pool(&data_dir) {
+                Ok(pool) => {
+                    app.manage(Arc::new(pool));
+                }
+                Err(err) => {
+                    println!("Error: {}", err);
+                }
+            }
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

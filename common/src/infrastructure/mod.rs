@@ -5,7 +5,7 @@ use std::fs;
 use std::path::Path;
 
 pub const MIGRATIONS: EmbeddedMigrations =
-    embed_migrations!("C:\\Users\\augus\\Projects\\pdv-ice-valle\\common\\migrations");
+    embed_migrations!("/home/hidemp4/ws/ws-tauri/pdv-ice-valle/common/migrations");
 
 pub type DbPool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 

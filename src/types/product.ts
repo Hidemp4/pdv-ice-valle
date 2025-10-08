@@ -25,7 +25,7 @@ export interface ProductRequest {
   id?: number;
   name: string;
   description?: string;
-  category_id?: number | null;
+  category_id?: number;
   price: number;
   sku: string;
   created_at?: string;
@@ -34,9 +34,15 @@ export interface ProductRequest {
 
 export interface DataResponse<T> {
   success: boolean;
-  data?: T;
+  data?: T | string;
   error?: string;
 }
+
+export interface APIResponse<T> {
+  success: boolean;
+  data: T;
+}
+
 
 export interface CartItem extends ProductResponse {
   quantity: number;

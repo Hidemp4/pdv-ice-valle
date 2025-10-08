@@ -19,6 +19,8 @@ import { ProductApi } from "@/services/productApi";
 // 3. MOSTRA FEEDBACK DE SUCESSO/ERRO
 // 4. LIMPA FORMULARIO APÓS CRIAR
 const Create = () => {
+    // Importa funções da API
+    const { createProduct, deleteProduct, loading, error } = useProducts();
 
     const [productList, setProductList] = useState<ProductResponse[]>([]);
 
@@ -27,20 +29,13 @@ const Create = () => {
             try {
                 const products = await ProductApi.getAll();
                 setProductList(products);
-                console.log("Produtos listados: ", products);
             } catch (error) {
                 console.error('Não foi possível listar os produtos: ', error);
                 error instanceof Error ? error.message : 'Erro ao retornar produtos'
             }
         }
-
         fetchProducts();
     }, []);
-
-    console.log("Teste de listar produtos: ", productList);
-
-    // Importa funções da API
-    const { createProduct, loading, error } = useProducts();
 
     // Estado para controle dos campos do formulario
     const [formData, setFormData] = useState<ProductRequest>({
@@ -48,7 +43,6 @@ const Create = () => {
         description: '',
         sku: '',
         price: 0,
-        category_id: null,
     });
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -90,7 +84,6 @@ const Create = () => {
                 description: '',
                 sku: '',
                 price: 0,
-                category_id: null,
             });
 
             // Remove mensagem de sucesso após 5 segundos
@@ -98,6 +91,24 @@ const Create = () => {
         }
     };
 
+    const handleDelete = async (product: ProductResponse) => {
+        // 1. Confirmação
+        const confirm = window.confirm(
+            `Tem certeza que deseja remover "${product.name}"?\n\nEsta ação não pode ser desfeita.`
+        )
+
+        if (!confirm) return;
+
+        // 2. Deleta (loading será TRUE automaticamente)
+        const success = await deleteProduct(product.id);
+
+        // 3. Feedback ao usuário
+        if (success) {
+            console.log("Produto removido com sucesso!");
+        } else {
+            alert(`${error || 'Erro ao remover produto'}`);
+        }
+    }
 
     const updateField = (field: keyof ProductRequest, value: any) => {
         setFormData(prev => ({
@@ -172,23 +183,6 @@ const Create = () => {
                         <label htmlFor="description">Descrição do Produto</label>
                         <Input id="description" type="text" value={formData.description} onChange={e => updateField('description', e.target.value)} placeholder="Informações adicionais sobre o produto..." disabled={loading} />
                     </div>
-
-                    {/* Campo: Categoria */}
-                    <div className="form-group">
-                        <label htmlFor="category">Categoria</label>
-                        <select
-                            id="category"
-                            value={formData.category_id !== null ? formData.category_id : '' as string | number}
-                            onChange={e => updateField('category_id', e.target.value ? parseInt(e.target.value) : null)}
-                            disabled={loading}
-                        >
-                            <option value="">Sem categoria</option>
-                            <option value="1">Bebidas</option>
-                            <option value="2">Alimentos</option>
-                            <option value="3">Limpeza</option>
-                        </select>
-                    </div>
-
                     {/* Botão de Submit */}
                     <div className="form-actions">
                         <button
@@ -202,8 +196,6 @@ const Create = () => {
                 </form>
             </div>
 
-
-
             {/* RESULTADO DAS CRIAÇÕES DE PRODUTOS */}
             <div className="mt-10">
                 <Table>
@@ -214,6 +206,7 @@ const Create = () => {
                             <TableHead>Descrição</TableHead>
                             <TableHead className="text-right">Preço</TableHead>
                             <TableHead className="text-right">SKU</TableHead>
+                            <TableHead className="text-right">Delete</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -224,8 +217,15 @@ const Create = () => {
                                 <TableCell>{product.description}</TableCell>
                                 <TableCell className="text-right">{product.price}</TableCell>
                                 <TableCell className="text-right">{product.sku}</TableCell>
+                                <TableCell className="flex justify-end">
+                                    <div className="bg-red-400 p-2 rounded-md border border-red-500 cursor-pointer"
+                                        onClick={() => handleDelete(product)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-4 text-[#eee]">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                        </svg>
+                                    </div>
+                                </TableCell>
                             </TableRow>
-
                         ))}
                     </TableBody>
                 </Table>

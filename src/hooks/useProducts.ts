@@ -13,6 +13,12 @@ import { useCallback, useEffect, useState } from "react";
  * - Reutilizável em múltiplos componentes
  */
 export const useProducts = () => {
+  /* *
+   * ESTADO: products
+   * - Armazena a lista de produtos carregados
+   * - Inicia vazio []
+   * - Atualizado após chamadas à API
+   */
   const [products, setProducts] = useState<ProductResponse[]>([]);
 
   /**
@@ -94,13 +100,31 @@ export const useProducts = () => {
   };
 
   /**
-   * FUNÇÃO: updateProduct
-   * Atualiza um produto existente
+   * FUNÇÃO: deleteProduct
+   * Remove um produto do banco E da lista local
+   * 
+   * @param id - ID do produto a remover
+   * @returns boolean - true se removeu, false se deu erro
    */
-  // const updateProduct = async (
-  //   id: number,
-  //   productData: ProductRequest
-  // )
+  const deleteProduct = async (id: number): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await ProductApi.delete(id);
+
+      // Remove o produto da lista local
+      // filter: mantém todos exceto o deletado
+      setProducts(prevProducts => prevProducts.filter(p => p.id !== id));
+      return true;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Erro ao remover produto';
+      setError(message);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
   
 
   return {
@@ -112,5 +136,6 @@ export const useProducts = () => {
     // funções
     loadProducts,
     createProduct,
+    deleteProduct,
   };
 };

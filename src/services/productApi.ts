@@ -1,56 +1,70 @@
-
 import { invoke } from "@tauri-apps/api/core";
-import { ProductRequest, ProductResponse } from "@/types/product";
+import { APIResponse, ProductRequest, ProductResponse } from "@/types/product";
 
 // *
 // Define o tipo de dado da resposta da API
-// Devido ao retorno de um objeto com wrapper 
+// Devido ao retorno de um objeto com wrapper
 // *
-interface APIResponse<T> {
-  success: boolean;
-  data: T;
-}
-
 export const ProductApi = {
+  /**
+   * GET ALL - Retorna todos os produtos
+   */
   getAll: async (): Promise<ProductResponse[]> => {
-    // *
-    // Retorna todos os produtos como Object com seguinte estrutura:
-    // category{ id: 1, name: 'Gelados', description: 'Produtos Gelados', create_at, update_at },
-    // create_at,
-    // description: '',
-    // id: number,
-    // name: '',
-    // price: number,
-    // sku: '',
-    // update_at
-    // *
-    try{
-      const products = await invoke<APIResponse<ProductResponse[]>>('get_all_products');
+    try {
+      const products = await invoke<APIResponse<ProductResponse[]>>(
+        "get_all_products"
+      );
       return products.data;
     } catch (error) {
-      console.error('Erro ao buscar produtos: ', error);
+      console.error("Erro ao buscar produtos: ", error);
       throw new Error(
-        error instanceof Error ? error.message : 'Erro desconhecido ao buscar produtos'
+        error instanceof Error
+          ? error.message
+          : "Erro desconhecido ao buscar produtos"
       );
     }
   },
 
+  /**
+   * CREATE - Cria novo produto
+   *
+   * @param product - Dados do produto (sem ID)
+   * @returns Produto criado com ID gerado pelo banco
+   *
+   * Como funciona:
+   * 1. Envia objeto ProductRequest
+   * 2. Rust cria no banco e retorna ProductResponse
+   * 3. Promise resolve com produto completo (com ID)
+   */
   create: async (product: ProductRequest): Promise<ProductResponse> => {
     try {
       const { id, ...productData } = product;
-      const created = await invoke<ProductResponse>('create_product', {
-        product: productData
-      })
-      
-      console.log('Produto criado com id: ', created.id);
-      return created;
+      const response = await invoke<ProductResponse>("create_product", {
+        product: productData,
+      });
+
+      return response;
     } catch (error) {
-      console.error("AQUIIIIIIIII", product)
-      console.error('Erro ao criar produto: ', error);
+      console.error("ERRO:", error);
       throw new Error(
-        error instanceof Error ? error.message : 'Erro ao criar produto'
+        typeof error === "string" ? error : "Erro ao criar produto"
       );
     }
-  }
-}
+  },
 
+  /**
+   * DELETE - Remove produto
+   * 
+   * IMPORTANTE: Verifique o que seu backend Rust retorna:
+   * Retorna o produto deletado
+   */
+  delete: async (id: number): Promise<void> => {
+    try {
+      await invoke<APIResponse<null>>('delete_product', { id });
+      console.log('Produto removido com sucesso:', id);
+    } catch (error) {
+      console.error(`Erro ao remover produto ${id}`, error);
+      throw new Error(`Erro ao remover produto ${id}`);
+    }
+  },
+};

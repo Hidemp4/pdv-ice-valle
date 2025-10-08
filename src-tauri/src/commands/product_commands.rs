@@ -32,6 +32,19 @@ pub async fn create_product(
 }
 
 #[tauri::command]
+pub async fn delete_product(
+    product_id: i32,
+    pool: State<'_, Arc<DbPool>>,
+) -> Result<DataResponse<String>, DataResponse<String>> {
+    let service = ProductService::new(pool.inner().clone());
+
+    match service.delete(product_id) {
+        Ok(_) => Ok(DataResponse::success("Product deleted")),
+        Err(err) => Err(DataResponse::error(err.to_string())),
+    }
+}
+
+#[tauri::command]
 pub async fn update_product(
     product_id: i32,
     data: ProductRequest,

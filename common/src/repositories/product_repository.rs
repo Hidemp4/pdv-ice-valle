@@ -33,6 +33,7 @@ pub trait ProductRepository {
         product: &NewProductWithCategory,
     ) -> Result<(Product, Option<Category>), Error>;
     fn update(&self, product_id: i32, product: &Product) -> Result<(Product, Category), Error>;
+    fn delete(&self, product_id: i32) -> Result<(), Error>;
     fn find_by_id(&self, product_id: i32) -> Result<(Product, Category), Error>;
     fn find_by_sku(&self, qsku: String) -> Result<(Product, Category), Error>;
 }
@@ -95,6 +96,19 @@ impl ProductRepository for DProductRepository {
                 Ok(product)
             }
             Err(err) => Err(err),
+        }
+    }
+
+    fn delete(&self, product_id: i32) -> Result<(), Error> {
+        let mut conn = self.pool.get().unwrap();
+        match diesel::delete(products)
+        .filter(id.eq(product_id))
+        .execute(&mut conn)
+        {
+            Ok(_) => {
+                Ok(())
+            },
+            Err(err) => Err(err)
         }
     }
 

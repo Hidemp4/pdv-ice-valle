@@ -38,6 +38,10 @@ impl ProductService {
         }
     }
 
+    pub fn delete(&self, product_id: i32) -> Result<(), Error> {
+        self.repository.delete(product_id)
+    }
+
     pub fn update(&self, product_id: i32, product: &Product) -> Result<(Product, Category), Error> {
         self.repository.update(product_id, product)
     }

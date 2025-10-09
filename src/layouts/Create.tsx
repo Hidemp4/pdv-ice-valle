@@ -86,27 +86,23 @@ const Create = () => {
                 price: 0,
             });
 
-            // Remove mensagem de sucesso após 5 segundos
-            setTimeout(() => setSuccessMessage(null), 5000);
+            window.location.reload();
         }
     };
 
     const handleDelete = async (product: ProductResponse) => {
         // 1. Confirmação
-        const confirm = window.confirm(
+        window.confirm(
             `Tem certeza que deseja remover "${product.name}"?\n\nEsta ação não pode ser desfeita.`
         )
 
-        if (!confirm) return;
-
-        // 2. Deleta (loading será TRUE automaticamente)
-        const success = await deleteProduct(product.id);
-
-        // 3. Feedback ao usuário
-        if (success) {
-            console.log("Produto removido com sucesso!");
-        } else {
-            alert(`${error || 'Erro ao remover produto'}`);
+        try {
+            // Deleta e recarrega a página automaticamente
+            await deleteProduct(product.id);
+            window.location.reload();
+        } catch (error) {
+            console.error('Erro ao deletar produto: ', error);
+            error instanceof Error ? error.message : 'Erro ao deletar produto';
         }
     }
 

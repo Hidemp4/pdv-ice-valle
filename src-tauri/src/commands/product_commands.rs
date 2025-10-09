@@ -39,7 +39,7 @@ pub async fn delete_product(
     let service = ProductService::new(pool.inner().clone());
 
     match service.delete(product_id) {
-        Ok(_) => Ok(DataResponse::success("Product deleted")),
+        Ok(_) => Ok(DataResponse::success("Product deleted".to_string())),
         Err(err) => Err(DataResponse::error(err.to_string())),
     }
 }

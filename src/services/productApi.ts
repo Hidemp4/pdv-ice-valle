@@ -58,10 +58,12 @@ export const ProductApi = {
    * IMPORTANTE: Verifique o que seu backend Rust retorna:
    * Retorna o produto deletado
    */
-  delete: async (id: number): Promise<void> => {
+  delete: async (id: number): Promise<string> => {
     try {
-      await invoke<APIResponse<null>>('delete_product', { id });
+      await invoke<APIResponse<null>>('delete_product', { productId: id });
       console.log('Produto removido com sucesso:', id);
+
+      return `Produto deletado. Id: ${id}`
     } catch (error) {
       console.error(`Erro ao remover produto ${id}`, error);
       throw new Error(`Erro ao remover produto ${id}`);

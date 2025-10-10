@@ -1,22 +1,30 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { useProducts } from "@/hooks/useProducts";
+import { useCart } from "@/hooks/useCart";
 
-interface HeaderProps {
-  onAddProduct: (sku: string, qtd: number) => void;
-}
 
-const Header: React.FC<HeaderProps> = ({ onAddProduct }) => {
-
+const Header: React.FC = () => {
+  // const { addProductToCart } = useProducts();
+  const { addProduct } = useCart();
   const [sku, setSku] = useState("");
-  const [qtdProduct, setQtdProduct] = useState(1);
+  const [qtd, setQtd] = useState(1);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (sku.trim()) {
-      onAddProduct(sku, qtdProduct);
-      setSku("");
-      setQtdProduct(1);
+
+    try {
+      // const success = await addProductToCart(validatedSku, qtd);
+      const success = await addProduct(sku, qtd)
+
+      if (success) {
+        setSku("");
+        setQtd(1);
+      }
+    } catch (error) {
+      console.error('Não foi possível adicionar ao carrinho Header.tsx: ', error);
+      error instanceof Error ? error.message : 'Erro ao adicionar ao carrinho'
     }
   };
 
@@ -35,18 +43,18 @@ const Header: React.FC<HeaderProps> = ({ onAddProduct }) => {
           onChange={(e) => setSku(e.target.value)}
         />
 
-        <label htmlFor="qtdProduct" className="text-sm font-medium">
+        <label htmlFor="qtd" className="text-sm font-medium">
           Qtd
         </label>
         <Input
           className="w-20 h-12"
           type="number"
           placeholder="1"
-          id="qtdProduct"
+          id="qtd"
           min="1"
           max="999"
-          value={qtdProduct}
-          onChange={(e) => setQtdProduct(Number(e.target.value))}
+          value={qtd}
+          onChange={(e) => setQtd(Number(e.target.value))}
         />
 
         <Button

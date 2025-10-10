@@ -17,6 +17,10 @@ export interface ProductResponse {
   category?: CategoryResponse;
 }
 
+export interface CartItem extends ProductResponse {
+  quantity: number;
+}
+
 /**
  * Tipo para criar/atualizar produtos
  * Espelha o ProductRequest do Rust

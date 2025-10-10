@@ -52,18 +52,33 @@ export const ProductApi = {
     }
   },
 
+  getProductBySku: async (sku: string): Promise<ProductResponse> => {
+    try {
+      const product = await invoke<APIResponse<ProductResponse>>(
+        "get_product_by_sku",
+        { sku: sku }
+      );
+      return product.data;
+    } catch (error) {
+      console.error("Erro ao buscar produto por SKU productApi.ts:", error);
+      throw new Error(
+        error instanceof Error ? error.message : "Produto não encontrado"
+      );
+    }
+  },
+
   /**
    * DELETE - Remove produto
-   * 
+   *
    * IMPORTANTE: Verifique o que seu backend Rust retorna:
    * Retorna o produto deletado
    */
   delete: async (id: number): Promise<string> => {
     try {
-      await invoke<APIResponse<null>>('delete_product', { productId: id });
-      console.log('Produto removido com sucesso:', id);
+      await invoke<APIResponse<null>>("delete_product", { productId: id });
+      console.log("Produto removido com sucesso:", id);
 
-      return `Produto deletado. Id: ${id}`
+      return `Produto deletado. Id: ${id}`;
     } catch (error) {
       console.error(`Erro ao remover produto ${id}`, error);
       throw new Error(`Erro ao remover produto ${id}`);

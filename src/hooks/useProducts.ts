@@ -22,20 +22,14 @@ export const useProducts = () => {
   const [products, setProducts] = useState<ProductResponse[]>([]);
 
   /**
-   * ESTADO: loading
-   * - Indica se há uma operação em andamento
-   * - true: mostra spinner/loading
-   * - false: mostra conteúdo
-   */
-  const [loading, setLoading] = useState(false);
-
-  /**
    * ESTADO: error
    * - Armazena mensagem de erro (se houver)
    * - null: sem erros
    * - string: mensagem do erro para mostrar ao usuário
    */
   const [error, setError] = useState<string | null>(null);
+
+  const [cart, setCart] = useState([]);
 
   /**
    * FUNÇÃO: loadProducts
@@ -44,7 +38,6 @@ export const useProducts = () => {
    * useCallback: Memoriza a função para evitar recriações desnecessárias
    */
   const loadProducts = useCallback(async () => {
-    setLoading(true);
     setError(null);
 
     try {
@@ -55,8 +48,6 @@ export const useProducts = () => {
         error instanceof Error ? error.message : "Erro ao carregar produtos";
       setError(message);
       console.error("Erro no loadProducts: ", error);
-    } finally {
-      setLoading(false);
     }
   }, []);
 
@@ -79,7 +70,6 @@ export const useProducts = () => {
   const createProduct = async (
     productsData: ProductRequest
   ): Promise<ProductResponse | null> => {
-    setLoading(true);
     setError(null);
 
     try {
@@ -94,20 +84,17 @@ export const useProducts = () => {
         error instanceof Error ? error.message : "Erro ao criar produto";
       console.error("Erro no createProduct: ", message);
       return null;
-    } finally {
-      setLoading(false);
     }
   };
 
   /**
    * FUNÇÃO: deleteProduct
    * Remove um produto do banco E da lista local
-   * 
+   *
    * @param id - ID do produto a remover
    * @returns boolean - true se removeu, false se deu erro
    */
   const deleteProduct = async (id: number): Promise<boolean> => {
-    setLoading(true);
     setError(null);
 
     try {
@@ -115,27 +102,49 @@ export const useProducts = () => {
 
       // Remove o produto da lista local
       // filter: mantém todos exceto o deletado
-      setProducts(prevProducts => prevProducts.filter(p => p.id !== id));
+      setProducts((prevProducts) => prevProducts.filter((p) => p.id !== id));
       return true;
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Erro ao remover produto';
+      const message =
+        error instanceof Error ? error.message : "Erro ao remover produto";
       setError(message);
       return false;
-    } finally {
-      setLoading(false);
     }
-  }
-  
+  };
+
+  // const addProductToCart = async ( sku: string, qtd: number ): Promise<boolean> => {
+  //   setError(null);
+
+  //   try {
+  //     const product = await ProductApi.getProductBySku(sku);
+
+  //     // Apenas para debug no desenvolvimento
+  //     console.log("Produto encontrado:", product);
+  //     console.log("Tipo do produto:", typeof product);
+  //     console.log("Quantidade:", qtd);
+
+  //     setCart(product, qtd);   
+  //   } catch (error) {
+  //     const message =
+  //       error instanceof Error
+  //         ? error.message
+  //         : "Erro ao adicionar produto ao carrinho";
+
+  //     console.error("Erro:", message);
+  //     setError(message);
+  //     return false;
+  //   }
+  // };
 
   return {
     // estados
     products,
-    loading,
     error,
 
     // funções
     loadProducts,
     createProduct,
     deleteProduct,
+    // addProductToCart,
   };
 };

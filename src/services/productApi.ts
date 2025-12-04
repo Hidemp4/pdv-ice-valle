@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { APIResponse, DataResponse, ProductRequest, ProductResponse } from "@/types/product";
+import { APIResponse, ProductRequest, ProductResponse } from "@/types/product";
 
 // *
 // Define o tipo de dado da resposta da API
@@ -53,32 +53,22 @@ export const ProductApi = {
   },
 
   getProductBySku: async (sku: string): Promise<ProductResponse> => {
-  try {
-    const response = await invoke<DataResponse<ProductResponse>>(
-      "get_product_by_sku",
-      { sku }
-    );
-    
-    // Verificar se data existe
-    if (!response.data) {
-      throw new Error("Produto não encontrado");
+    try {
+      const product = await invoke<ProductResponse>(
+        "get_product_by_sku",
+        { sku }
+      );
+
+      return product;
+    } catch (error) {
+      // O Tauri retorna o erro como string
+      const errorMessage = typeof error === 'string'
+        ? error
+        : "Produto não encontrado";
+
+      throw new Error(errorMessage);
     }
-    
-    return response.data;
-  } catch (error) {
-    console.error("SKU enviado:", sku);
-    console.error("Tipo:", typeof sku);
-    console.error("Erro ao buscar produto por SKU:", error);
-    
-    if (typeof error === 'string') {
-      throw new Error(error);
-    }
-    
-    throw new Error(
-      error instanceof Error ? error.message : "Produto não encontrado"
-    );
-  }
-},
+  },
 
   /**
    * DELETE - Remove produto

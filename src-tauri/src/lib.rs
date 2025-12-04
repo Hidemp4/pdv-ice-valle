@@ -33,6 +33,7 @@ pub fn run() {
             commands::product_commands::get_all_products,
             commands::product_commands::get_product_by_id,
             commands::product_commands::get_product_by_sku,
+            commands::product_commands::debug_list_all_skus,
             /* category commands */
             commands::category_commands::create_category,
             commands::category_commands::update_category,

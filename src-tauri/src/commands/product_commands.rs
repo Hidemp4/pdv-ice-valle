@@ -89,11 +89,36 @@ pub async fn get_product_by_id(
 pub async fn get_product_by_sku(
     sku: String,
     pool: State<'_, Arc<DbPool>>,
-) -> Result<DataResponse<ProductResponse>, DataResponse<String>> {
+) -> Result<ProductResponse, String> {
     let service = ProductService::new(pool.inner().clone());
 
     match service.get_by_sku(sku) {
-        Ok(res) => Ok(DataResponse::success(ProductResponse::from(res))),
-        Err(err) => Err(DataResponse::error(err.to_string())),
+        Ok(res) => Ok(ProductResponse::from(res)),
+        Err(err) => Err(err.to_string()),
+    }
+}
+
+#[tauri::command]
+pub async fn debug_list_all_skus(
+    pool: State<'_, Arc<DbPool>>,
+) -> Result<Vec<String>, String> {
+    let service = ProductService::new(pool.inner().clone());
+    
+    match service.all() {
+        Ok(products) => {
+            let skus: Vec<String> = products
+                .iter()
+                .map(|(p, _)| format!("'{}' (len: {})", p.sku, p.sku.len()))
+                .collect();
+            
+            println!("📦 Total de produtos: {}", skus.len());
+            println!("📦 SKUs no banco:");
+            for sku in &skus {
+                println!("   {}", sku);
+            }
+            
+            Ok(skus)
+        },
+        Err(err) => Err(err.to_string())
     }
 }

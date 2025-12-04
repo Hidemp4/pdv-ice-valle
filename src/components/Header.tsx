@@ -3,35 +3,28 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useCart } from "@/hooks/useCart";
 
-
 const Header: React.FC = () => {
-
   // const { addProductToCart } = useProducts();
   const { addProduct } = useCart();
   const [sku, setSku] = useState("");
   const [qtd, setQtd] = useState(1);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
   try {
-    const success = await addProduct(sku, qtd);
+    const cleanedSku = sku.trim().replace(/"/g, "");
+    const success = await addProduct(cleanedSku, qtd);
 
     if (success) {
       setSku("");
       setQtd(1);
-      // TODO: Mostrar mensagem de sucesso ao usuário
       console.log(success);
     }
   } catch (error) {
-    const errorMessage = error instanceof Error 
-      ? error.message 
-      : 'Erro ao adicionar ao carrinho';
-    
-    console.error('Erro no Header:', errorMessage);
-    // TODO: Mostrar erro ao usuário (toast, alert, etc)
+    console.error('Erro no Header:', error);
   }
-  };
+};
 
   return (
     <header className="header bg-gray-800 text-white mt-4 p-4 h-26">

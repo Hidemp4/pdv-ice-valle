@@ -3,7 +3,7 @@ import { useState } from "react";
 
 export const useCart = () => {
   // Estado do carrinho
-  const [cart, setCart] = useState([]);
+  // const [cart, setCart] = useState([]);
 
   /**
    * ESTADO: error
@@ -25,9 +25,9 @@ export const useCart = () => {
     // TODO: Adicionar lógica para adicionar ao carrinho
     
     return "Produto adicionado com sucesso";
-  } catch (error) {
-    const errorMessage = error instanceof Error 
-      ? error.message 
+  } catch (err) {
+    const errorMessage = err instanceof Error 
+      ? err.message 
       : 'Impossível adicionar este produto ao carrinho.';
     
     console.error('Erro ao adicionar produto:', errorMessage);

@@ -42,26 +42,21 @@ impl ProductRepository for DProductRepository {
     fn all(&self) -> Result<Vec<(Product, Option<Category>)>, Error> {
         let mut conn = self.pool.get().unwrap();
 
-        match products
+        products
             .left_join(categories::table)
             .select((Product::as_select(), categories::all_columns.nullable()))
             .get_results::<(Product, Option<Category>)>(&mut conn)
-        {
-            Ok(data) => Ok(data),
-            Err(err) => Err(err),
-        }
     }
 
     fn save(&self, product: &NewProduct) -> Result<(Product, Option<Category>), Error> {
         let mut conn = self.pool.get().unwrap();
-        match diesel::insert_into(products::table)
+
+        let created = diesel::insert_into(products::table)
             .values(product)
             .returning(Product::as_returning())
-            .get_result(&mut conn)
-        {
-            Ok(data) => Ok((data, None)),
-            Err(err) => Err(err),
-        }
+            .get_result(&mut conn)?;
+
+        Ok((created, None))
     }
 
     fn save_with_category(
@@ -69,74 +64,54 @@ impl ProductRepository for DProductRepository {
         product: &NewProductWithCategory,
     ) -> Result<(Product, Option<Category>), Error> {
         let mut conn = self.pool.get().unwrap();
-        match diesel::insert_into(products::table)
+
+        let created = diesel::insert_into(products::table)
             .values(product)
             .returning(Product::as_returning())
-            .get_result(&mut conn)
-        {
-            Ok(data) => {
-                let (product, category) = self.find_by_id(data.id)?;
-                Ok((product, Some(category)))
-            }
-            Err(err) => Err(err),
-        }
+            .get_result::<Product>(&mut conn)?;
+
+        // carregar produto + categoria
+        let (prod, cat) = self.find_by_id(created.id)?;
+
+        Ok((prod, Some(cat)))
     }
 
     fn update(&self, product_id: i32, product: &Product) -> Result<(Product, Category), Error> {
         let mut conn = self.pool.get().unwrap();
 
-        match diesel::update(products)
-            .filter(id.eq(product_id))
+        let updated = diesel::update(products.filter(id.eq(product_id)))
             .set(product)
             .returning(Product::as_returning())
-            .get_result(&mut conn)
-        {
-            Ok(data) => {
-                let product = self.find_by_id(data.id)?;
-                Ok(product)
-            }
-            Err(err) => Err(err),
-        }
+            .get_result::<Product>(&mut conn)?;
+
+        self.find_by_id(updated.id)
     }
 
     fn delete(&self, product_id: i32) -> Result<(), Error> {
         let mut conn = self.pool.get().unwrap();
-        match diesel::delete(products)
-        .filter(id.eq(product_id))
-        .execute(&mut conn)
-        {
-            Ok(_) => {
-                Ok(())
-            },
-            Err(err) => Err(err)
-        }
+
+        diesel::delete(products.filter(id.eq(product_id))).execute(&mut conn)?;
+
+        Ok(())
     }
 
-    fn find_by_id(&self, product_id: i32) -> Result<(Product, Category), Error> {
+    fn find_by_id(&self, product_id: i32) -> Result<(Product, Option<Category>), Error> {
         let mut conn = self.pool.get().unwrap();
 
-        match products
+        products
             .filter(id.eq(product_id))
-            .inner_join(categories::table)
-            .select((Product::as_select(), Category::as_select()))
-            .get_result::<(Product, Category)>(&mut conn)
-        {
-            Ok(data) => Ok(data),
-            Err(err) => Err(err),
-        }
+            .left_join(categories::table)
+            .select((Product::as_select(), categories::all_columns.nullable()))
+            .get_result::<(Product, Option<Category>)>(&mut conn)
     }
 
-    fn find_by_sku(&self, qsku: String) -> Result<(Product, Category), Error> {
+    fn find_by_sku(&self, qsku: String) -> Result<(Product, Option<Category>), Error> {
         let mut conn = self.pool.get().unwrap();
 
-        match products
+        products
             .filter(sku.eq(qsku))
-            .inner_join(categories::table)
-            .select((Product::as_select(), Category::as_select()))
-            .get_result(&mut conn)
-        {
-            Ok(data) => Ok(data),
-            Err(err) => Err(err),
-        }
+            .left_join(categories::table)
+            .select((Product::as_select(), categories::all_columns.nullable()))
+            .get_result::<(Product, Option<Category>)>(&mut conn)
     }
 }

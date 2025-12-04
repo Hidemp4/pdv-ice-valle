@@ -38,7 +38,7 @@ export interface ProductRequest {
 
 export interface DataResponse<T> {
   success: boolean;
-  data?: T | string;
+  data?: T;
   error?: string;
 }
 

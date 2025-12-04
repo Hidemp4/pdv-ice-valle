@@ -1,11 +1,11 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { useProducts } from "@/hooks/useProducts";
 import { useCart } from "@/hooks/useCart";
 
 
 const Header: React.FC = () => {
+
   // const { addProductToCart } = useProducts();
   const { addProduct } = useCart();
   const [sku, setSku] = useState("");
@@ -14,18 +14,23 @@ const Header: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      // const success = await addProductToCart(validatedSku, qtd);
-      const success = await addProduct(sku, qtd)
+  try {
+    const success = await addProduct(sku, qtd);
 
-      if (success) {
-        setSku("");
-        setQtd(1);
-      }
-    } catch (error) {
-      console.error('Não foi possível adicionar ao carrinho Header.tsx: ', error);
-      error instanceof Error ? error.message : 'Erro ao adicionar ao carrinho'
+    if (success) {
+      setSku("");
+      setQtd(1);
+      // TODO: Mostrar mensagem de sucesso ao usuário
+      console.log(success);
     }
+  } catch (error) {
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'Erro ao adicionar ao carrinho';
+    
+    console.error('Erro no Header:', errorMessage);
+    // TODO: Mostrar erro ao usuário (toast, alert, etc)
+  }
   };
 
   return (

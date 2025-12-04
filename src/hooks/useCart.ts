@@ -13,26 +13,29 @@ export const useCart = () => {
    */
   const [error, setError] = useState<string | null>(null);
 
-  // const [loading, setLoading] = useState(false);
-
   const addProduct = async (sku: string, qtd: number): Promise<string> => {
-    setError(null);
+  setError(null);
 
-    try {
-        const product = ProductApi.getProductBySku(sku);
-        // Apenas para debug no desenvolvimento
-        console.log("Produto encontrado:", product);
-        console.log("Tipo do produto:", typeof product);
-        console.log("Quantidade:", qtd);
-        
-        return "Deu certo";
-    } catch (error) {
-        console.error('Não foi possível adicionar o produto ao carrinho useCart.ts: ', error)
-        error instanceof Error ? error.message : 'Impossível adicionar este produto ao carrinho.'
-    }
-
-    return "Fim addProduct useCart.ts"
-  };
+  try {
+    const product = await ProductApi.getProductBySku(sku);
+    
+    console.log("Produto encontrado:", product);
+    console.log("Quantidade:", qtd);
+    
+    // TODO: Adicionar lógica para adicionar ao carrinho
+    
+    return "Produto adicionado com sucesso";
+  } catch (error) {
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'Impossível adicionar este produto ao carrinho.';
+    
+    console.error('Erro ao adicionar produto:', errorMessage);
+    setError(errorMessage);
+    
+    throw error; // Re-lançar para o componente tratar
+  }
+};
 
   return { addProduct };
 };

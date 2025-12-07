@@ -42,15 +42,15 @@ impl ProductService {
         self.repository.delete(product_id)
     }
 
-    pub fn update(&self, product_id: i32, product: &Product) -> Result<(Product, Category), Error> {
+    pub fn update(&self, product_id: i32, product: &Product) -> Result<(Product, Option<Category>), Error> {
         self.repository.update(product_id, product)
     }
 
-    pub fn get(&self, id: i32) -> Result<(Product, Category), Error> {
+    pub fn get(&self, id: i32) -> Result<(Product, Option<Category>), Error> {
         self.repository.find_by_id(id)
     }
 
-    pub fn get_by_sku(&self, sku: impl Into<String>) -> Result<(Product, Category), Error> {
+    pub fn get_by_sku(&self, sku: impl Into<String>) -> Result<(Product, Option<Category>), Error> {
         self.repository.find_by_sku(sku.into())
     }
 }

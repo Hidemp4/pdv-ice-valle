@@ -4,7 +4,6 @@ import { Input } from "./ui/input";
 import { useCart } from "@/hooks/useCart";
 
 const Header: React.FC = () => {
-  // const { addProductToCart } = useProducts();
   const { addProduct } = useCart();
   const [sku, setSku] = useState("");
   const [qtd, setQtd] = useState(1);

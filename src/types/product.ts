@@ -19,6 +19,7 @@ export interface ProductResponse {
 
 export interface CartItem extends ProductResponse {
   quantity: number;
+  subtotal: number;
 }
 
 /**
@@ -47,11 +48,5 @@ export interface APIResponse<T> {
   data: T;
 }
 
-
-export interface CartItem extends ProductResponse {
-  quantity: number;
-  subtotal: number;
-}
-
 export type ProductList = ProductResponse[];
-export type CartItemList = CartItem[];
+export type Cart = CartItem[];

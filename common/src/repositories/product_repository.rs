@@ -32,10 +32,10 @@ pub trait ProductRepository {
         &self,
         product: &NewProductWithCategory,
     ) -> Result<(Product, Option<Category>), Error>;
-    fn update(&self, product_id: i32, product: &Product) -> Result<(Product, Category), Error>;
+    fn update(&self, product_id: i32, product: &Product) -> Result<(Product, Option<Category>), Error>;
     fn delete(&self, product_id: i32) -> Result<(), Error>;
-    fn find_by_id(&self, product_id: i32) -> Result<(Product, Category), Error>;
-    fn find_by_sku(&self, qsku: String) -> Result<(Product, Category), Error>;
+    fn find_by_id(&self, product_id: i32) -> Result<(Product, Option<Category>), Error>;
+    fn find_by_sku(&self, qsku: String) -> Result<(Product, Option<Category>), Error>;
 }
 
 impl ProductRepository for DProductRepository {
@@ -71,12 +71,10 @@ impl ProductRepository for DProductRepository {
             .get_result::<Product>(&mut conn)?;
 
         // carregar produto + categoria
-        let (prod, cat) = self.find_by_id(created.id)?;
-
-        Ok((prod, Some(cat)))
+        self.find_by_id(created.id)
     }
 
-    fn update(&self, product_id: i32, product: &Product) -> Result<(Product, Category), Error> {
+    fn update(&self, product_id: i32, product: &Product) -> Result<(Product, Option<Category>), Error> {
         let mut conn = self.pool.get().unwrap();
 
         let updated = diesel::update(products.filter(id.eq(product_id)))

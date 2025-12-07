@@ -11,38 +11,6 @@ Sistema PDV (Ponto de Venda) desenvolvido com [Tauri](https://tauri.app), utiliz
 - [Tailwind CSS](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
 
-## 🔌 Dependências principais
-
-- @radix-ui/react-dialog
-- @radix-ui/react-separator
-- @radix-ui/react-slot
-- @radix-ui/react-tooltip
-- @tailwindcss/vite
-- @tanstack/react-table
-- @tauri-apps/api
-- @tauri-apps/cli
-- @tauri-apps/plugin-opener
-- @tauri-apps/plugin-sql
-- @types/node
-- @types/react
-- @types/react-dom
-- @vitejs/plugin-react
-- class-variance-authority
-- clsx
-- jsdom
-- lucide-react
-- react
-- react-dom
-- react-router-dom
-- tailwind-merge
-- tailwindcss
-- tw-animate-css
-- typescript
-- vaul
-- vite
-- vitest
-
-## Funcionalidades:
 - Registro de vendas
 - Controle de estoque
 - Interface intuitiva e responsiva
@@ -104,3 +72,38 @@ Identificador: com.pdv.app
 Frontend: React + TypeScript
 
 Gerenciador de pacotes: npm
+
+
+## 🔌 Dependências principais
+
+- @radix-ui/react-dialog
+- @radix-ui/react-select
+- @radix-ui/react-separator
+- @radix-ui/react-slot
+- @radix-ui/react-tooltip
+- @tailwindcss/vite
+- @tanstack/react-table
+- @tauri-apps/api
+- @tauri-apps/cli
+- @tauri-apps/plugin-opener
+- @tauri-apps/plugin-sql
+- @types/node
+- @types/react
+- @types/react-dom
+- @vitejs/plugin-react
+- class-variance-authority
+- clsx
+- jsdom
+- lucide-react
+- react
+- react-dom
+- react-router-dom
+- tailwind-merge
+- tailwindcss
+- tw-animate-css
+- typescript
+- vaul
+- vite
+- vitest
+
+

@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Se você instalou via npm (@fontsource/inter), o import é feito no main.tsx.
+   Se preferir via CSS, descomente a linha abaixo: */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'); */
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -8,6 +12,8 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  
+  /* Cores Padrão */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -26,6 +32,8 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  
+  /* Cores de Gráfico e Sidebar */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -39,106 +47,126 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* --- SUAS CORES PERSONALIZADAS --- */
+  /* Isso permite usar bg-brand-blue, text-brand-pink, etc */
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-pink: var(--brand-pink);
 }
 
 :root {
+  /* Definição das Cores da Marca */
+  --brand-blue: #2596be;
+  --brand-pink: #ec4899; /* Ajuste este Hex se tiver um rosa específico */
+
   --radius: 0.625rem;
+
+  /* Modo Claro */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
+  
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
+  
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  
+  /* AQUI: Mudamos o Primary para ser o AZUL da marca */
+  --primary: var(--brand-blue);
+  --primary-foreground: #ffffff; /* Texto branco no fundo azul */
+  
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
+  
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
+  
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
+  
   --destructive: oklch(0.577 0.245 27.325);
+  
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  
+  /* AQUI: O anel de foco (ring) também fica azul */
+  --ring: var(--brand-blue);
+  
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
+  
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary: var(--brand-blue);
+  --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-ring: var(--brand-blue);
 }
 
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
+  
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
+  
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+  
+  /* No modo dark, o Azul da marca continua sendo o Primary */
+  --primary: var(--brand-blue);
+  --primary-foreground: #ffffff;
+  
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
+  
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
+  
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
+  
   --destructive: oklch(0.704 0.191 22.216);
+  
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --ring: var(--brand-blue);
+  
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
+  
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary: var(--brand-blue);
+  --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: var(--brand-blue);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  
   body {
     @apply bg-background text-foreground;
-    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI";
-  }
-
-  :root {
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
-  }
- 
-  .dark {
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.439 0 0);
+    
+    /* Configuração da Fonte Inter e Suavização (Smooth) */
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    
+    /* Anti-aliasing para deixar a fonte "macia" */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -154,4 +182,47 @@
   input[type='number'] {
     -moz-appearance: textfield;
   }
+}
+
+/* Animações para toasts e modais */
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-in {
+  animation-fill-mode: both;
+}
+
+.slide-in-from-top-2 {
+  animation-name: slideInFromTop;
+}
+
+.fade-in-0 {
+  animation-name: fadeIn;
+}
+
+.duration-300 {
+  animation-duration: 300ms;
+}
+
+/* Hover effect para toasts */
+.toast:hover {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
 }

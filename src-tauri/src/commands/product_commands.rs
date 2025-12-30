@@ -99,26 +99,24 @@ pub async fn get_product_by_sku(
 }
 
 #[tauri::command]
-pub async fn debug_list_all_skus(
-    pool: State<'_, Arc<DbPool>>,
-) -> Result<Vec<String>, String> {
+pub async fn debug_list_all_skus(pool: State<'_, Arc<DbPool>>) -> Result<Vec<String>, String> {
     let service = ProductService::new(pool.inner().clone());
-    
+
     match service.all() {
         Ok(products) => {
             let skus: Vec<String> = products
                 .iter()
                 .map(|(p, _)| format!("'{}' (len: {})", p.sku, p.sku.len()))
                 .collect();
-            
+
             println!("📦 Total de produtos: {}", skus.len());
             println!("📦 SKUs no banco:");
             for sku in &skus {
                 println!("   {}", sku);
             }
-            
+
             Ok(skus)
-        },
-        Err(err) => Err(err.to_string())
+        }
+        Err(err) => Err(err.to_string()),
     }
 }

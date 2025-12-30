@@ -25,10 +25,7 @@ pub fn create_sale(
 
     let builder = SaleBuilder::new(sale.total_gross, sale.total_net, sale.payment_method);
     let items = sale_items.into_iter().map(SaleItems::from).collect();
-    match service.create(
-        builder,
-        items
-    ) {
+    match service.create(builder, items) {
         Ok(res) => Ok(DataResponse::success(SaleResponse::from(res))),
         Err(err) => Err(DataResponse::error(err.to_string())),
     }

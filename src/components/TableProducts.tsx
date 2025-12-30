@@ -9,8 +9,11 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
 
 const TableProducts: React.FC = () => {
+  const { cart } = useCart();
+
   return (
     <div className="p-4">
       <Table>
@@ -24,7 +27,15 @@ const TableProducts: React.FC = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-              <TableRow>
+          {cart.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center text-gray-500">
+                Carrinho vazio
+              </TableCell>
+            </TableRow>
+          ) : (
+            cart.map((item) => (
+              <TableRow key={item.sku}>
                 <TableCell>
                   <Button
                     variant="ghost"
@@ -37,21 +48,23 @@ const TableProducts: React.FC = () => {
                 </TableCell>
                 <TableCell>
                   <div>
-                    <div className="font-medium">NOME</div>
-                    <div className="text-sm text-gray-500">SKU</div>
-                      <div className="text-xs text-gray-400 mt-1">DESCRICAO</div>
+                    <div className="font-medium">{item.name}</div>
+                    <div className="text-sm text-gray-500">{item.sku}</div>
+                    <div className="text-sm text-gray-500">{item.description}</div>
                   </div>
                 </TableCell>
                 <TableCell className="text-center">
-                  <span className="font-medium">QUANTIDADE</span>
+                  <span className="font-medium">{item.quantity}</span>
                 </TableCell>
                 <TableCell className="text-right">
-                  R$ PRECO
+                  R$ {item.price.toFixed(2)}
                 </TableCell>
                 <TableCell className="text-right font-medium">
-                  R$ SUBTOTAL
+                  R$ {item.subtotal.toFixed(2)}
                 </TableCell>
               </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </div>

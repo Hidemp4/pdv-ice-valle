@@ -1,69 +1,128 @@
-// Declarações globais para o Tauri
+import type {
+  ProductResponse,
+  ProductRequest,
+  DataResponse,
+} from './product';
+
+// ============================================
+// GLOBAL DECLARATIONS
+// ============================================
 declare global {
   interface Window {
     __TAURI_INTERNALS__: {
       invoke: <TRequest = unknown, TResponse = unknown>(
-        command: string, 
+        command: string,
         args?: TRequest
       ) => Promise<TResponse>;
     };
   }
 }
 
-// Tipos específicos para os comandos Tauri
+// ============================================
+// TAURI COMMAND TYPES
+// ============================================
 export interface TauriCommand<TRequest = unknown, TResponse = unknown> {
   command: string;
   invoke: (args?: TRequest) => Promise<TResponse>;
 }
 
-// Factory para criar comandos tipados
+// ============================================
+// COMMAND FACTORY
+// ============================================
 export function createTauriCommand<TRequest = unknown, TResponse = unknown>(
   command: string
 ): TauriCommand<TRequest, TResponse> {
   return {
     command,
-    invoke: (args?: TRequest) => window.__TAURI_INTERNALS__.invoke<TRequest, TResponse>(command, args),
+    invoke: (args?: TRequest) =>
+      window.__TAURI_INTERNALS__.invoke<TRequest, TResponse>(command, args),
   };
 }
 
-// Comandos disponíveis da API de produtos
+// ============================================
+// PRODUCT COMMAND TYPES
+// ============================================
+export interface GetAllProductsRequest {}
+export type GetAllProductsResponse = DataResponse<ProductResponse[]>;
+
+export interface GetProductByIdRequest {
+  product_id: number;
+}
+export type GetProductByIdResponse = DataResponse<ProductResponse>;
+
+export interface GetProductBySkuRequest {
+  sku: string;
+}
+export type GetProductBySkuResponse = DataResponse<ProductResponse>;
+
+export interface CreateProductRequest {
+  product: ProductRequest;
+}
+export type CreateProductResponse = DataResponse<ProductResponse>;
+
+export interface UpdateProductRequest {
+  product_id: number;
+  data: ProductRequest;
+}
+export type UpdateProductResponse = DataResponse<ProductResponse>;
+
+export interface DeleteProductRequest {
+  product_id: number;
+}
+export type DeleteProductResponse = DataResponse<null>;
+
+export interface SearchProductsRequest {
+  query: string;
+}
+export type SearchProductsResponse = DataResponse<ProductResponse[]>;
+
+export interface GetProductsByCategoryRequest {
+  category_id: number;
+}
+export type GetProductsByCategoryResponse = DataResponse<ProductResponse[]>;
+
+// ============================================
+// PRODUCT COMMANDS
+// ============================================
 export const ProductCommands = {
-  getAllProducts: createTauriCommand<void, import('./product').DataResponse<import('./product').ProductResponse[]>>('get_all_products'),
+  getAllProducts: createTauriCommand<
+    GetAllProductsRequest,
+    GetAllProductsResponse
+  >('get_all_products'),
 
   getProductById: createTauriCommand<
-    { product_id: number },
-    import('./product').DataResponse<import('./product').ProductResponse>
+    GetProductByIdRequest,
+    GetProductByIdResponse
   >('get_product_by_id'),
 
   getProductBySku: createTauriCommand<
-    { sku: string },
-    import('./product').DataResponse<import('./product').ProductResponse>
+    GetProductBySkuRequest,
+    GetProductBySkuResponse
   >('get_product_by_sku'),
 
   createProduct: createTauriCommand<
-    { product: import('./product').ProductRequest },
-    import('./product').DataResponse<import('./product').ProductResponse>
+    CreateProductRequest,
+    CreateProductResponse
   >('create_product'),
 
   updateProduct: createTauriCommand<
-    { product_id: number, data: import('./product').ProductRequest },
-    import('./product').DataResponse<import('./product').ProductResponse>
+    UpdateProductRequest,
+    UpdateProductResponse
   >('update_product'),
 
-  // delete_product e outros comandos ainda não implementados no Rust, mas já previstos
   deleteProduct: createTauriCommand<
-    { id: number },
-    import('./product').DataResponse<boolean>
+    DeleteProductRequest,
+    DeleteProductResponse
   >('delete_product'),
 
   searchProducts: createTauriCommand<
-    { query: string },
-    import('./product').DataResponse<import('./product').ProductResponse[]>
+    SearchProductsRequest,
+    SearchProductsResponse
   >('search_products'),
 
   getProductsByCategory: createTauriCommand<
-    { category_id: number },
-    import('./product').DataResponse<import('./product').ProductResponse[]>
+    GetProductsByCategoryRequest,
+    GetProductsByCategoryResponse
   >('get_products_by_category'),
 } as const;
 

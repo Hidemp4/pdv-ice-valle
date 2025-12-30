@@ -3,20 +3,21 @@ import MainLayout from "@/layouts/MainLayout";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Sales from "./layouts/Sales";
 import Home from "./layouts/Home";
-import Create from "./layouts/Create";
+import { CartProvider } from "./components/CartContext";
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <Router>
-        <MainLayout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/sales" element={<Sales />} />
-            <Route path="/create" element={<Create />} />
-          </Routes>
-        </MainLayout>
-      </Router>
+      <CartProvider>
+        <Router>
+          <MainLayout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/sales" element={<Sales />} />
+            </Routes>
+          </MainLayout>
+        </Router>
+      </CartProvider>
     </div>
   );
 };

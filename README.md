@@ -1,71 +1,92 @@
+<div align="center">
+
 # 🧊 PDV Ice Valle
 
-Sistema completo de Ponto de Venda (PDV) desenvolvido com tecnologias modernas, oferecendo uma solução robusta e eficiente para gerenciamento de vendas e estoque.
+**Sistema de Ponto de Venda Moderno, Rápido e Seguro.**
 
-## 📋 Índice
+[![Rust](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
+[![Tauri](https://img.shields.io/badge/Tauri-FFC131?style=for-the-badge&logo=tauri&logoColor=black)](https://tauri.app)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-- [Sobre o Projeto](#sobre-o-projeto)
-- [Funcionalidades](#funcionalidades)
-- [Tecnologias](#tecnologias)
-- [Pré-requisitos](#pré-requisitos)
-- [Instalação](#instalação)
-- [Como Usar](#como-usar)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Contribuindo](#contribuindo)
-- [Licença](#licença)
+[Funcionalidades](#-funcionalidades) • [Instalação](#-instalação-e-uso) • [Tecnologias](#-tecnologias) • [Contribuindo](#-contribuindo)
+
+</div>
+
+---
+
+## 🖼️ Preview
+
+_(Em breve imagens ou GIFs do sistema)_
+
+---
 
 ## 🎯 Sobre o Projeto
 
-O PDV Ice Valle é um sistema de ponto de venda construído com [Tauri](https://tauri.app), combinando a leveza e segurança do Rust no backend com a modernidade do React + TypeScript no frontend. O resultado é uma aplicação desktop multiplataforma, rápida e eficiente.
+O **PDV Ice Valle** é uma solução robusta de Ponto de Venda desenvolvida para oferecer a performance de aplicações nativas com a flexibilidade da web moderna.
 
-### Por que Tauri?
+Construído sobre o **Tauri v2**, ele combina a segurança e velocidade do **Rust** no backend com uma interface rica em **React + TypeScript**.
 
-- **Performance**: Aplicação nativa com baixo consumo de recursos
-- **Segurança**: Backend em Rust com proteções nativas
-- **Multiplataforma**: Funciona em Windows, macOS e Linux
-- **Tamanho reduzido**: Binários significativamente menores que Electron
+Diferente de soluções baseadas em Electron, o Ice Valle gera **binários extremamente leves**, consome **pouquíssima memória RAM** e é ideal para hardwares de PDV com recursos limitados, funcionando totalmente **offline**.
+
+---
 
 ## ✨ Funcionalidades
 
-- ✅ Registro de vendas em tempo real
-- ✅ Controle completo de estoque
-- ✅ Interface intuitiva e responsiva
-- ✅ Gerenciamento de produtos
-- ✅ Histórico de transações
-- ✅ Performance otimizada para sistemas locais
-- ✅ Banco de dados local (SQLite)
+### 🛒 Frente de Caixa (PDV)
+- **Venda rápida** por código de barras (SKU) ou busca manual
+- **Carrinho dinâmico** com subtotal e total em tempo real
+- **Múltiplos métodos de pagamento** na mesma venda:
+  - Dinheiro
+  - Pix
+  - Débito
+  - Crédito
+- **Cálculo automático de troco** com assistente visual
+
+### 📊 Gestão e Relatórios
+- **Dashboard analítico**
+  - Gráficos de vendas por horário
+  - Cards de resumo (Ticket Médio, Total de Transações)
+- **Histórico de vendas**
+  - Filtros
+  - Ordenação
+  - Paginação
+- **Exportação inteligente**
+  - 📄 **PDF** (formato extrato bancário)
+  - 📊 **CSV** (Excel / Google Sheets)
+
+### ⚙️ Sistema
+- **Banco de dados local** com SQLite (sem servidor externo)
+- **Alta performance** e funcionamento offline
+- **Segurança nativa** via Rust + Tauri
+
+---
 
 ## 🛠️ Tecnologias
 
-### Frontend
-- [React](https://reactjs.org/) - Biblioteca para construção de interfaces
-- [TypeScript](https://www.typescriptlang.org/) - Superset JavaScript com tipagem estática
-- [Vite](https://vitejs.dev/) - Build tool e dev server ultrarrápido
-- [Tailwind CSS](https://tailwindcss.com/) - Framework CSS utilitário
-- [shadcn/ui](https://ui.shadcn.com/) - Componentes UI reutilizáveis
-- [React Router](https://reactrouter.com/) - Roteamento para React
+| Área | Tecnologia | Descrição |
+|---|---|---|
+| Core | [Tauri v2](https://tauri.app) | Binários nativos leves |
+| Backend | [Rust](https://www.rust-lang.org/) | Lógica de sistema e segurança |
+| Frontend | [React](https://reactjs.org/) | Interface de usuário |
+| Linguagem | [TypeScript](https://www.typescriptlang.org/) | Tipagem estática |
+| Estilização | [Tailwind CSS](https://tailwindcss.com/) | CSS utilitário |
+| UI Kit | [shadcn/ui](https://ui.shadcn.com/) | Componentes acessíveis |
+| Gráficos | [Recharts](https://recharts.org/) | Visualização de dados |
+| Database | [SQLite](https://www.sqlite.org/) | Banco de dados embarcado |
 
-### Backend
-- [Tauri](https://tauri.app) - Framework para apps desktop
-- [Rust](https://www.rust-lang.org/) - Linguagem de programação de sistemas
-- [SQLite](https://www.sqlite.org/) - Banco de dados local
-
-### UI Components
-- Shadcn UI (Dialog, Select, Separator, Slot, Tooltip)
-- Heroi Icons (Ícones)
+---
 
 ## 📦 Pré-requisitos
 
-Antes de começar, certifique-se de ter instalado:
+- **Node.js** (v18+ recomendado)
+- **Rust** (Stable)
+- **npm**, **yarn** ou **pnpm**
 
-- **Node.js** (v16 ou superior)
-- **npm** ou **yarn**
-- **Rust** (última versão estável)
-- **Dependências do sistema** (veja abaixo)
+### Dependências do Sistema Operacional
 
-### Dependências do Sistema (Linux)
-
-Para Ubuntu 24.04 LTS ou superior:
+#### 🐧 Linux (Ubuntu/Debian)
 
 ```bash
 sudo apt update
@@ -77,138 +98,78 @@ sudo apt install -y \
   build-essential \
   curl \
   wget \
-  file
+  file \
+  libssl-dev
 ```
 
-### Dependências do Sistema (Windows)
+### 🪟 Windows
 
-No Windows, você precisará:
-- [Microsoft Visual Studio C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
-- [WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) (geralmente já instalado no Windows 10/11)
+- Instale Microsoft Visual Studio C++ Build Tools
 
-### Dependências do Sistema (macOS)
+- WebView2 já vem instalado no Windows 10/11
 
-No macOS, instale o Xcode Command Line Tools:
-
-```bash
+### 🍎 macOS
+```
 xcode-select --install
 ```
 
-## 🚀 Instalação
+### 🚀 Instalação e Uso
 
-### 1. Clone o repositório
-
-```bash
+Clone o repositório
+```
 git clone https://github.com/Hidemp4/pdv-ice-valle.git
 cd pdv-ice-valle
 ```
 
-### 2. Mude para a branch dev
-
-```bash
-git checkout dev
+Instale as dependências
 ```
-
-### 3. Instale as dependências do projeto
-
-```bash
 npm install
 ```
 
-### 4. Instale o Rust (se ainda não tiver)
-
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source $HOME/.cargo/env
+Caso necessário, instale plugins do Tauri v2:
+```
+npm run tauri add fs dialog
 ```
 
-Verifique a instalação:
-
-```bash
-rustc --version
-cargo --version
+DEV
 ```
-
-## 💻 Como Usar
-
-### Modo Desenvolvimento
-
-Execute o projeto em modo de desenvolvimento com hot-reload:
-
-```bash
 npm run tauri dev
 ```
 
-### Build de Produção
-
-Gere um executável otimizado para o seu sistema operacional:
-
-```bash
+Build de Produção
+```
 npm run tauri build
 ```
 
-O executável estará disponível em:
-- **Linux**: `src-tauri/target/release/bundle/`
-- **Windows**: `src-tauri/target/release/bundle/`
-- **macOS**: `src-tauri/target/release/bundle/`
-
-### Executar Testes
-
-```bash
-npm run test
+O executável será gerado em:
+```
+src-tauri/target/release/bundle/
 ```
 
-## 📁 Estrutura do Projeto
-
-```
+### 📁 Estrutura do Projeto
+```text
 pdv-ice-valle/
-├── src/                      # Código fonte do frontend
-│   ├── components/           # Componentes React
-│   ├── pages/                # Páginas da aplicação
-│   ├── lib/                  # Utilitários e helpers
-│   └── App.tsx               # Componente principal
-├── src-tauri/                # Código fonte do backend
-│   ├── src/                  # Código Rust
-│   │   └── main.rs           # Ponto de entrada Rust
-│   ├── tauri.conf.json       # Configuração do Tauri
-│   └── Cargo.toml            # Dependências Rust
-├── public/                   # Arquivos estáticos
-├── common/                   # Código compartilhado
-├── contract/                 # Contratos de API/tipos
-├── index.html                # Template HTML
-├── package.json              # Dependências Node.js
-├── vite.config.ts            # Configuração do Vite
-├── tailwind.config.js        # Configuração do Tailwind
-├── tsconfig.json             # Configuração TypeScript
-└── README.md                 # Este arquivo
+├── src/
+│   ├── components/       # Frontend (React)
+│   ├── hooks/            # Custom Hooks
+│   ├── layouts/          # Páginas principais
+│   ├── lib/              # Utils (cn, formatters)
+│   ├── types/            # Tipagens globais
+│   └── utils/            # Exportação PDF / CSV
+├── src-tauri/
+│   ├── src/              # Backend (Rust)
+│   ├── capabilities/     # Permissões (Tauri v2)
+│   └── tauri.conf.json   # Configuração do App
+└── ...
 ```
 
-## 🐧 Notas para Linux
 
-Este projeto foi desenvolvido e testado no **Ubuntu 24.04 LTS**.
-
-### Requisitos importantes:
-- Versões corretas das bibliotecas (webkit2gtk-4.1+, libsoup-3.0+)
-- `pkg-config` acessível no PATH
-- GTK 3 instalado e configurado
-
-### Solução de problemas comuns:
-
-**Erro: "webkit2gtk-4.1 not found"**
-```bash
-sudo apt install libwebkit2gtk-4.1-dev
-```
-
-**Erro: "error while loading shared libraries"**
-```bash
-sudo ldconfig
-```
-
-## 📄 Licença
-
-Este projeto está sob licença.
+### 📄 Licença
+Projeto de uso proprietário/privado.
 
 ## 👥 Autores
 
-- **Hidemp4** - [GitHub](https://github.com/Hidemp4)
-- **cainhooow** - [GitHub](https://github.com/cainhooow)
+| Autor | GitHub |
+|------|--------|
+| Hidemp4 | https://github.com/Hidemp4 |
+| cainhooow | https://github.com/cainhooow |

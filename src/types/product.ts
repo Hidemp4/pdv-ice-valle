@@ -1,3 +1,6 @@
+// ============================================
+// CATEGORY TYPES
+// ============================================
 export interface CategoryResponse {
   id: number;
   name: string;
@@ -6,6 +9,9 @@ export interface CategoryResponse {
   updated_at?: string;
 }
 
+// ============================================
+// PRODUCT TYPES
+// ============================================
 export interface ProductResponse {
   id: number;
   name: string;
@@ -17,15 +23,6 @@ export interface ProductResponse {
   category?: CategoryResponse;
 }
 
-export interface CartItem extends ProductResponse {
-  quantity: number;
-  subtotal: number;
-}
-
-/**
- * Tipo para criar/atualizar produtos
- * Espelha o ProductRequest do Rust
- */
 export interface ProductRequest {
   id?: number;
   name: string;
@@ -37,16 +34,49 @@ export interface ProductRequest {
   updated_at?: string;
 }
 
-export interface DataResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
+// ============================================
+// CART TYPES
+// ============================================
+export interface CartItem extends ProductResponse {
+  quantity: number;
+  subtotal: number;
 }
 
-export interface APIResponse<T> {
-  success: boolean;
-  data: T;
-}
-
-export type ProductList = ProductResponse[];
 export type Cart = CartItem[];
+
+// ============================================
+// PAYMENT TYPES
+// ============================================
+export interface Payment {
+  id: number;
+  value: string; // Nota: Vem como string, converter para number ao somar
+  method: PaymentMethod;
+}
+
+export type PaymentMethod = "Dinheiro" | "Pix" | "Débito" | "Crédito";
+
+// ============================================
+// SALE TYPES
+// ============================================
+export interface Sale {
+  id: string;
+  date: string;
+  time: string;
+  products: CartItem[];
+  payments: Payment[];
+  total: number;
+}
+
+export interface SalesSummaryData {
+  totalSales: number;
+  totalTransactions: number;
+  averageTicket: number;
+}
+
+// ============================================
+// STORAGE TYPES
+// ============================================
+export const STORAGE_KEYS = {
+  SALES: "sales",
+  SUSPENDED_SALES: "suspended_sales",
+} as const;

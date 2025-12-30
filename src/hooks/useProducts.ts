@@ -29,8 +29,6 @@ export const useProducts = () => {
    */
   const [error, setError] = useState<string | null>(null);
 
-  const [cart, setCart] = useState([]);
-
   /**
    * FUNÇÃO: loadProducts
    * Carrega todos os produtos do banco
@@ -111,30 +109,6 @@ export const useProducts = () => {
       return false;
     }
   };
-
-  // const addProductToCart = async ( sku: string, qtd: number ): Promise<boolean> => {
-  //   setError(null);
-
-  //   try {
-  //     const product = await ProductApi.getProductBySku(sku);
-
-  //     // Apenas para debug no desenvolvimento
-  //     console.log("Produto encontrado:", product);
-  //     console.log("Tipo do produto:", typeof product);
-  //     console.log("Quantidade:", qtd);
-
-  //     setCart(product, qtd);   
-  //   } catch (error) {
-  //     const message =
-  //       error instanceof Error
-  //         ? error.message
-  //         : "Erro ao adicionar produto ao carrinho";
-
-  //     console.error("Erro:", message);
-  //     setError(message);
-  //     return false;
-  //   }
-  // };
 
   return {
     // estados

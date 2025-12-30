@@ -1,53 +1,72 @@
-import HeaderSales from "@/components/HeaderSales";
-import TableSales from "@/components/TableSales";
-
-// Tipos
-type mockSale = {
-  id: number;
-  products: string[];
-  date: string;
-  total: string;
-  paymentMethod: string;
-};
+import React, { useState } from "react";
+import { useSales } from "@/hooks/useSales";
+import { SalesHeader } from "@/components/sales/SalesHeader";
+import { SalesSummary } from "@/components/sales/SalesSummary";
+import { SalesTable } from "@/components/sales/SalesTable";
+import { SaleDetailsDrawer } from "@/components/sales/SaleDetailsDrawer";
+import { Sale } from "@/types/product";
 
 const Sales: React.FC = () => {
-  // Por enquanto, usando dados mockados como exemplo
-  const mockSalesData: mockSale[] = [
-    {
-      id: 1,
-      products: ["Coca-Cola 2L", "Hamburguer Artesanal"],
-      date: "07/08 21:56:04", // Data de hoje (exemplo)
-      total: "R$25,50",
-      paymentMethod: "Pix",
-    },
-    {
-      id: 2,
-      products: ["Pizza Margherita"],
-      date: "07/09 15:30:22", // Data de hoje (exemplo)
-      total: "R$35,00",
-      paymentMethod: "Cartão",
-    },
-    {
-      id: 3,
-      products: ["Sanduíche Natural"],
-      date: "13/09 12:15:10", // Ontem (exemplo)
-      total: "R$10,00",
-      paymentMethod: "Dinheiro",
-    },
-    {
-      id: 4,
-      products: ["Sanduíche Natural"],
-      date: "13/08 12:15:10", // Ontem (exemplo)
-      total: "R$100,00",
-      paymentMethod: "Dinheiro",
-    }
-  ];
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  // Hook agora retorna muito mais coisas
+  const { 
+    sales,
+    filteredSales,
+    summary, 
+    chartData,
+    searchTerm, 
+    setSearchTerm,
+    sortConfig,
+    setSortConfig,
+    currentPage,
+    totalPages,
+    setCurrentPage
+  } = useSales();
+
+  const handleOpenDrawer = (sale: Sale) => {
+    setSelectedSale(sale);
+    setIsDrawerOpen(true);
+  };
+
+  const handleCloseDrawer = () => {
+    setIsDrawerOpen(false);
+    setTimeout(() => setSelectedSale(null), 300);
+  };
 
   return (
-    <div className="layout-container p-4">
-      <HeaderSales salesData={mockSalesData} />
-      <h1 className="font-medium mt-4 mb-4">Lista de Vendas</h1>
-      <TableSales sales={mockSalesData} />      
+    <div className="layout-container p-4 max-w-7xl mx-auto min-h-screen bg-gray-50/30">
+      <SalesHeader />
+      
+      {/* Passamos chartData para o novo layout do resumo */}
+      <SalesSummary 
+        data={summary} 
+        chartData={chartData} 
+      />
+      
+      {/* Tabela com controles conectados ao Hook */}
+      <SalesTable
+        sales={sales} 
+        allFilteredSales={filteredSales}
+        onViewDetails={handleOpenDrawer}
+        searchTerm={searchTerm}
+        onSearchChange={(term) => {
+          setSearchTerm(term);
+          setCurrentPage(1); // Resetar para página 1 ao filtrar
+        }}
+        sortConfig={sortConfig}
+        onSortChange={setSortConfig}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
+
+      <SaleDetailsDrawer
+        sale={selectedSale}
+        isOpen={isDrawerOpen}
+        onClose={handleCloseDrawer}
+      />
     </div>
   );
 };

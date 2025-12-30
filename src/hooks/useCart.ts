@@ -1,40 +1,85 @@
-import { ProductApi } from "@/services/productApi";
-import { Cart, CartItem, ProductResponse } from "@/types/product";
 import { useState } from "react";
+import { ProductApi } from "@/services/productApi";
+import type { Cart, CartItem } from "@/types/product";
 
 export const useCart = () => {
-  // Estado do carrinho
   const [cart, setCart] = useState<Cart>([]);
-  /**
-   * ESTADO: error
-   * - Armazena mensagem de erro (se houver)
-   * - null: sem erros
-   * - string: mensagem do erro para mostrar ao usuário
-   */
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  function mergeCartItem( cart: Cart, newItem: ProductResponse): Cart {
-    const existingIndex = cart.findIndex(
-      item = item.product.sku === newItem.sku
-    );
-  }
-
-  const addProduct = async (sku: string, qtd: number): Promise<void> => {
-    setIsLoading(true);
-    setError(null);
-
+  const addProduct = async (sku: string, quantity: number): Promise<void> => {
     try {
-      const product = await ProductApi.getProductBySku(sku);
+      const existingProduct = await ProductApi.getProductBySku(sku);
+      const existingItemIndex = cart.findIndex(item => item.sku === sku);
 
-      setCart((prevCart) => 
-        mergeCartItem(prevCart, {product, quantity: qtd})
-      )
+      if (existingItemIndex !== -1) {
+        // Produto já existe, atualiza quantidade
+        setCart((prevCart) => {
+          const updatedCart = [...prevCart];
+          const newQuantity = updatedCart[existingItemIndex].quantity + quantity;
+          updatedCart[existingItemIndex] = {
+            ...updatedCart[existingItemIndex],
+            quantity: newQuantity,
+            subtotal: updatedCart[existingItemIndex].price * newQuantity,
+          };
+          return updatedCart;
+        });
+      } else {
+        // Produto novo, adiciona ao carrinho
+        const cartItem: CartItem = {
+          ...existingProduct,
+          quantity,
+          subtotal: existingProduct.price * quantity,
+        };
 
-    } catch (err) {
-
+        setCart((prevCart) => [...prevCart, cartItem]);
+      }
+    } catch (error: unknown) {
+      console.error("Produto não encontrado no carrinho", error);
+      throw new Error("Produto não encontrado no carrinho");
     }
   };
 
-  return { addProduct };
+  const removeProduct = (sku: string): void => {
+    setCart((prevCart) => prevCart.filter(item => item.sku !== sku));
+  };
+
+  const updateQuantity = (sku: string, quantity: number): void => {
+    if (quantity <= 0) {
+      removeProduct(sku);
+      return;
+    }
+
+    setCart((prevCart) =>
+      prevCart.map(item =>
+        item.sku === sku
+          ? {
+              ...item,
+              quantity,
+              subtotal: item.price * quantity,
+            }
+          : item
+      )
+    );
+  };
+
+  const clearCart = (): void => {
+    setCart([]);
+  };
+
+  const getCartTotal = (): number => {
+    return cart.reduce((total, item) => total + item.subtotal, 0);
+  };
+
+  const getCartItemsCount = (): number => {
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  return {
+    cart,
+    addProduct,
+    removeProduct,
+    updateQuantity,
+    clearCart,
+    getCartTotal,
+    getCartItemsCount,
+  };
 };

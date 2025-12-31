@@ -10,7 +10,6 @@ const Sales: React.FC = () => {
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Hook agora retorna muito mais coisas
   const { 
     sales,
     filteredSales,
@@ -36,31 +35,44 @@ const Sales: React.FC = () => {
   };
 
   return (
-    <div className="layout-container p-4 max-w-7xl mx-auto min-h-screen bg-gray-50/30">
-      <SalesHeader />
+    // 1. h-screen, w-screen e overflow-hidden removem o scroll da página inteira
+    // 2. flex-col organiza os itens um abaixo do outro
+    <div className="h-screen max-w flex flex-col bg-gray-50/30 p-4 gap-4 overflow-hidden">
       
-      {/* Passamos chartData para o novo layout do resumo */}
-      <SalesSummary 
-        data={summary} 
-        chartData={chartData} 
-      />
+      {/* Header: shrink-0 impede que ele seja esmagado */}
+      <div className="shrink-0">
+        <SalesHeader />
+      </div>
       
-      {/* Tabela com controles conectados ao Hook */}
-      <SalesTable
-        sales={sales} 
-        allFilteredSales={filteredSales}
-        onViewDetails={handleOpenDrawer}
-        searchTerm={searchTerm}
-        onSearchChange={(term) => {
-          setSearchTerm(term);
-          setCurrentPage(1); // Resetar para página 1 ao filtrar
-        }}
-        sortConfig={sortConfig}
-        onSortChange={setSortConfig}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
+      {/* Resumo/Gráficos: shrink-0 impede que ele seja esmagado */}
+      <div className="shrink-0">
+        <SalesSummary 
+          data={summary} 
+          chartData={chartData} 
+        />
+      </div>
+      
+      {/* Tabela: flex-1 faz ela ocupar TODO o espaço que sobrou na tela. 
+          min-h-0 é crucial para o scroll interno funcionar em flex items aninhados */}
+      <div className="flex-1 min-h-0 flex flex-col">
+        <SalesTable
+          sales={sales} 
+          allFilteredSales={filteredSales}
+          onViewDetails={handleOpenDrawer}
+          searchTerm={searchTerm}
+          onSearchChange={(term) => {
+            setSearchTerm(term);
+            setCurrentPage(1); 
+          }}
+          sortConfig={sortConfig}
+          onSortChange={setSortConfig}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+          // Passamos uma classe extra para garantir que o componente da tabela cresça
+          className="h-full" 
+        />
+      </div>
 
       <SaleDetailsDrawer
         sale={selectedSale}

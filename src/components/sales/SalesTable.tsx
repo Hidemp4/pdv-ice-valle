@@ -34,7 +34,7 @@ interface SalesTableProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-
+  className?: string;
 }
 
 export const SalesTable: React.FC<SalesTableProps> = ({
@@ -47,7 +47,8 @@ export const SalesTable: React.FC<SalesTableProps> = ({
   onSortChange,
   currentPage,
   totalPages,
-  onPageChange
+  onPageChange,
+  className
 }) => {
 
   // Helpers de formatação
@@ -79,10 +80,10 @@ export const SalesTable: React.FC<SalesTableProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg border shadow-sm flex flex-col">
+    <div className={`bg-white rounded-lg border shadow-sm flex flex-col ${className ?? ""}`}>
 
       {/* Toolbar: Filtro */}
-      <div className="p-4 border-b flex justify-between items-center bg-gray-50/50">
+      <div className="p-4 border-b flex justify-between items-center bg-gray-50/50 shrink-0">
         <h2 className="font-medium text-lg">Histórico</h2>
         <div className="relative w-72">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
@@ -134,9 +135,9 @@ export const SalesTable: React.FC<SalesTableProps> = ({
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto relative">
         <Table>
-          <TableHeader>
+          <TableHeader className="sticky top-0 bg-white z-10 shadow-sm">
             <TableRow>
               <TableHead
                 className="w-[150px] cursor-pointer hover:bg-gray-100 transition-colors"
@@ -202,7 +203,7 @@ export const SalesTable: React.FC<SalesTableProps> = ({
       </div>
 
       {/* Paginação */}
-      <div className="p-4 border-t flex items-center justify-between bg-gray-50/50">
+      <div className="p-4 border-t flex items-center justify-between bg-gray-50/50 shrink-0">
         <div className="text-sm text-gray-500">
           Página {currentPage} de {totalPages || 1}
         </div>

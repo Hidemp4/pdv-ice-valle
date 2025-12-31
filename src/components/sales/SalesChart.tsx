@@ -29,15 +29,15 @@ export const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
           Sem dados suficientes para gerar gráfico
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="90%">
           <AreaChart
             data={data}
             margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
           >
             <defs>
               <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#0f172a" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#0f172a" stopOpacity={0} />
+                <stop offset="5%" stopColor="#ec4899" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#ec4899" stopOpacity={0} />
               </linearGradient>
             </defs>
             <XAxis 
@@ -65,7 +65,7 @@ export const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
             <Area
               type="monotone"
               dataKey="total"
-              stroke="#0f172a"
+              stroke="#ec4899"
               fillOpacity={1}
               fill="url(#colorTotal)"
               strokeWidth={2}
